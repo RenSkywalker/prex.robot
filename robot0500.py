@@ -21,10 +21,10 @@ def processo_ja_registrado(processo):
     conn = conectar_banco()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT 1 FROM processos_encontrados WHERE processo = %s
+        SELECT 1 FROM processos_encontrados WHERE numero_processo = %s
         UNION
-        SELECT 1 FROM processos_nao_encontrados WHERE processo = %s
-    """, (processo, processo))
+        SELECT 1 FROM processos_nao_encontrados WHERE numero_processo = %s
+    """, (numero_processo, processo))
     resultado = cursor.fetchone()
     cursor.close()
     conn.close()
