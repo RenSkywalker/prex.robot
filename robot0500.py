@@ -50,7 +50,7 @@ def gerar_numero_processo():
     prefixo_fixo = random.choices(prefixos, weights=pesos, k=1)[0]
     numeros_aleatorios = f"{random.randint(0, 9999999):07d}"
     ano_fixo = random.choice([2024, 2025])
-    return f"{prefixo_fixo}{numeros_aleatorios}-{random.randint(10, 99)}.{ano_fixo}.8.26.0500"
+    return f"{prefixo_fixo}{numeros_aleatorios}.{ano_fixo}.8.26.0500"
 
 # Configuração do WebDriver
 options = webdriver.ChromeOptions()
