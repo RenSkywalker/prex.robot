@@ -17,14 +17,14 @@ def conectar_banco():
     )
 
 # Função para verificar se o processo já foi registrado
-def processo_ja_registrado(processo):
+def processo_ja_registrado(numero_processo):
     conn = conectar_banco()
     cursor = conn.cursor()
     cursor.execute("""
         SELECT 1 FROM processos_encontrados WHERE numero_processo = %s
         UNION
         SELECT 1 FROM processos_nao_encontrados WHERE numero_processo = %s
-    """, (numero_processo, processo))
+    """, (numero_processo, numero_processo))
     resultado = cursor.fetchone()
     cursor.close()
     conn.close()
@@ -36,7 +36,7 @@ def registrar_processo(processo, encontrado):
     conn = conectar_banco()
     cursor = conn.cursor()
     cursor.execute(f"""
-        INSERT INTO {tabela} (processo) VALUES (%s)
+        INSERT INTO {tabela} (numero_processo) VALUES (%s)
         ON CONFLICT DO NOTHING
     """, (processo,))
     conn.commit()
@@ -50,17 +50,17 @@ def gerar_numero_processo():
     prefixo_fixo = random.choices(prefixos, weights=pesos, k=1)[0]
     numeros_aleatorios = f"{random.randint(0, 9999999):07d}"
     ano_fixo = random.choice([2024, 2025])
-    return f"{prefixo_fixo}{numeros_aleatorios}.{ano_fixo}.8.26.0500"
+    return f"{prefixo_fixo}{numeros_aleatorios}-{random.randint(10, 99)}.{ano_fixo}.8.26.0500"
 
 # Configuração do WebDriver
 options = webdriver.ChromeOptions()
-options.add_argument("--headless=new")  # Usar o modo headless mais recente
+options.add_argument("--headless=new")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--disable-blink-features=AutomationControlled")
 
 try:
-    service = Service()  # chromedriver deve estar em /usr/local/bin ou no PATH
+    service = Service()
     driver = webdriver.Chrome(service=service, options=options)
 except Exception as e:
     print(f"Erro ao iniciar o WebDriver: {e}")
@@ -117,5 +117,3 @@ buscar_precatorios_tjsp(processos)
 
 # Encerra driver
 driver.quit()
-
-
