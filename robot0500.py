@@ -36,7 +36,7 @@ def registrar_processo(processo, encontrado):
     conn = conectar_banco()
     cursor = conn.cursor()
     cursor.execute(f"""
-        INSERT INTO {tabela} (numero_processo) VALUES (%s)
+        INSERT INTO {tabela} (processo) VALUES (%s)
         ON CONFLICT DO NOTHING
     """, (processo,))
     conn.commit()
