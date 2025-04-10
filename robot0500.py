@@ -31,10 +31,12 @@ def processo_ja_registrado(processo):
     return resultado is not None
 
 # Função para registrar processo no banco
-def registrar_processo(processo, encontrado):
+def registrar_processo(processo, encontrado, url=None):
     tabela = "processos_encontrados" if encontrado else "processos_nao_encontrados"
     conn = conectar_banco()
     cursor = conn.cursor()
+    if url:
+        print(f"🔗 Link registrado: {url}")
     cursor.execute(f"""
         INSERT INTO {tabela} (processo) VALUES (%s)
         ON CONFLICT DO NOTHING
@@ -94,16 +96,16 @@ def buscar_precatorios_tjsp(processos):
             url_depois = driver.current_url
 
             if "<li>Não existem informações disponíveis para os parâmetros informados.</li>" in driver.page_source:
-                print(f"❌ Processo não encontrado: {processo}")
-                registrar_processo(processo, False)
+                print(f"❌ Processo não encontrado: {processo} - {url_depois}")
+                registrar_processo(processo, False, url_depois)
 
             elif url_depois != url_antes and "DW" in url_depois:
                 print(f"✅ Processo encontrado: {processo} - {url_depois}")
-                registrar_processo(processo, True)
+                registrar_processo(processo, True, url_depois)
 
             elif url_depois != url_antes and "DW" not in url_depois:
                 print(f"⚠️ URL mudou sem 'DW': {processo} - {url_depois}")
-                registrar_processo(processo, False)
+                registrar_processo(processo, False, url_depois)
 
         except Exception as e:
             print(f"❗ Erro ao buscar precatórios para {processo}: {e}")
@@ -117,3 +119,4 @@ buscar_precatorios_tjsp(processos)
 
 # Encerra driver
 driver.quit()
+
