@@ -24,7 +24,7 @@ def processo_ja_registrado(numero_processo):
         SELECT 1 FROM processos_encontrados WHERE numero_processo = %s
         UNION
         SELECT 1 FROM processos_nao_encontrados WHERE numero_processo = %s
-    """, (numero_processo, numero_processo))
+    """, (numero_processo, processo))
     resultado = cursor.fetchone()
     cursor.close()
     conn.close()
