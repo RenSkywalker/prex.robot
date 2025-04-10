@@ -17,14 +17,14 @@ def conectar_banco():
     )
 
 # Função para verificar se o processo já foi registrado
-def processo_ja_registrado(numero_processo):
+def processo_ja_registrado(processo):
     conn = conectar_banco()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT 1 FROM processos_encontrados WHERE numero_processo = %s
+        SELECT 1 FROM processos_encontrados WHERE processo = %s
         UNION
-        SELECT 1 FROM processos_nao_encontrados WHERE numero_processo = %s
-    """, (numero_processo, processo))
+        SELECT 1 FROM processos_nao_encontrados WHERE processo = %s
+    """, (processo, processo))
     resultado = cursor.fetchone()
     cursor.close()
     conn.close()
