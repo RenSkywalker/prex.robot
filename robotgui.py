@@ -1,14 +1,14 @@
-from flask import Flask, render_template, request, redirect, session, url_for
-from flask_cors import CORS  # 👈 Adicionado aqui
+from flask import Flask, render_template, request, redirect, session, url_for, jsonify
+from flask_cors import CORS  # 👈 Permitir comunicação com o frontend
 import psycopg2
 import pandas as pd
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)  # 👈 Habilita CORS para todas as rotas
+CORS(app)  # 👈 Libera acesso CORS para todas as rotas
 app.secret_key = 'sua_chave_secreta'  # Altere para algo seguro
 
-# --- Conexão com o banco de forma otimizada ---
+# --- Conexão com o banco ---
 def get_db_connection(user, password):
     return psycopg2.connect(
         host="localhost",
@@ -17,7 +17,7 @@ def get_db_connection(user, password):
         password=password
     )
 
-# --- Funções auxiliares ---
+# --- Autenticação ---
 def autenticar_usuario(email, senha):
     conn = get_db_connection("robo_admin", "cursirenan79")
     cur = conn.cursor()
@@ -26,11 +26,13 @@ def autenticar_usuario(email, senha):
     cur.close()
     return result[0] if result else None
 
+# --- Carregar processos encontrados ---
 def carregar_processos():
     conn = get_db_connection("robo_prex", "cursirenan79")
     df = pd.read_sql("SELECT numero_processo, link FROM processos_encontrados ORDER BY data_encontrado DESC LIMIT 100", conn)
     return df
 
+# --- Rotas de frontend (HTML) ---
 @app.route('/')
 def index():
     if 'primeiro_login' not in session:
@@ -49,7 +51,7 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.is_json:  # 👈 Isso permite aceitar JSON vindo do React
+        if request.is_json:
             dados = request.get_json()
             email = dados.get('email')
             senha = dados.get('senha')
@@ -61,11 +63,11 @@ def login():
         if usuario:
             session['usuario_logado'] = usuario
             if request.is_json:
-                return {'nome': usuario}, 200  # 👈 Retorna JSON para o React
+                return jsonify({'nome': usuario}), 200
             return redirect(url_for('dashboard'))
         else:
             if request.is_json:
-                return {'message': 'Credenciais inválidas'}, 401
+                return jsonify({'message': 'Credenciais inválidas'}), 401
             return render_template('login.html', erro='Credenciais inválidas.')
     return render_template('login.html')
 
@@ -83,6 +85,25 @@ def ir_login():
     session['primeiro_login'] = False
     return redirect(url_for('login'))
 
+# --- Rotas da API (para frontend React) ---
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    dados = request.get_json()
+    email = dados.get('email')
+    senha = dados.get('senha')
+
+    usuario = autenticar_usuario(email, senha)
+    if usuario:
+        return jsonify({ 'nome': usuario }), 200
+    return jsonify({ 'message': 'Credenciais inválidas' }), 401
+
+@app.route('/api/processos', methods=['GET'])
+def api_processos():
+    processos_df = carregar_processos()
+    processos = processos_df.to_dict(orient='records')
+    return jsonify(processos)
+
+# --- Inicialização ---
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
 
