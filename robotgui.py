@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, session, url_for
+from flask_cors import CORS  # 👈 Adicionado aqui
 import psycopg2
 import pandas as pd
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app)  # 👈 Habilita CORS para todas as rotas
 app.secret_key = 'sua_chave_secreta'  # Altere para algo seguro
 
 # --- Conexão com o banco de forma otimizada ---
@@ -47,13 +49,23 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        senha = request.form['senha']
+        if request.is_json:  # 👈 Isso permite aceitar JSON vindo do React
+            dados = request.get_json()
+            email = dados.get('email')
+            senha = dados.get('senha')
+        else:
+            email = request.form['email']
+            senha = request.form['senha']
+
         usuario = autenticar_usuario(email, senha)
         if usuario:
             session['usuario_logado'] = usuario
+            if request.is_json:
+                return {'nome': usuario}, 200  # 👈 Retorna JSON para o React
             return redirect(url_for('dashboard'))
         else:
+            if request.is_json:
+                return {'message': 'Credenciais inválidas'}, 401
             return render_template('login.html', erro='Credenciais inválidas.')
     return render_template('login.html')
 
