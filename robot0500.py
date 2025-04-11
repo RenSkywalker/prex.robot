@@ -139,14 +139,14 @@ while True:
         finally:
             if 'driver' in locals():
                 driver.quit()
-        print("⏳ Aguardando 5 minutos até a próxima execução...\n")
-        logging.info("Aguardando 5 minutos para nova execução...\n")
+        print("⏳ Aguardando 3 minutos até a próxima execução...\n")
+        logging.info("Aguardando 3 minutos para nova execução...\n")
     else:
         msg = f"🕒 Fora do horário de execução. Agora são {datetime.now().strftime('%H:%M:%S')}"
         print(msg)
         logging.info(msg)
 
-    time.sleep(120)  # Aguarda 5 minutos antes da próxima verificação
+    time.sleep(180)  # Aguarda 3 minutos antes da próxima verificação
 
 
 
