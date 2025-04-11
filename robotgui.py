@@ -3,31 +3,28 @@ import pandas as pd
 import psycopg2
 from datetime import datetime
 
-# --- Funções auxiliares ---
-def autenticar_usuario(email, senha):
-    # Substitua pelos seus dados reais de conexão
-    conn = psycopg2.connect(
+# --- Conexão com o banco de forma otimizada ---
+@st.cache_resource
+def get_db_connection(user, password):
+    return psycopg2.connect(
         host="localhost",
         database="robo_prex",
-        user="robo_admin",
-        password="cursirenan79"
+        user=user,
+        password=password
     )
+
+# --- Funções auxiliares ---
+def autenticar_usuario(email, senha):
+    conn = get_db_connection("robo_admin", "cursirenan79")
     cur = conn.cursor()
     cur.execute("SELECT nome FROM usuarios WHERE email = %s AND senha = %s", (email, senha))
     result = cur.fetchone()
     cur.close()
-    conn.close()
     return result[0] if result else None
 
 def carregar_processos():
-    conn = psycopg2.connect(
-        host="localhost",
-        database="robo_prex",
-        user="robo_prex",
-        password="cursirenan79"
-    )
+    conn = get_db_connection("robo_prex", "cursirenan79")
     df = pd.read_sql("SELECT numero_processo, link FROM processos_encontrados ORDER BY data_encontrado DESC LIMIT 100", conn)
-    conn.close()
     return df
 
 # --- Controle de sessão ---
