@@ -1,10 +1,12 @@
-import streamlit as st
-import pandas as pd
+from flask import Flask, render_template, request, redirect, session, url_for
 import psycopg2
+import pandas as pd
 from datetime import datetime
 
+app = Flask(__name__)
+app.secret_key = 'sua_chave_secreta'  # Altere para algo seguro
+
 # --- Conexão com o banco de forma otimizada ---
-@st.cache_resource
 def get_db_connection(user, password):
     return psycopg2.connect(
         host="localhost",
@@ -27,41 +29,48 @@ def carregar_processos():
     df = pd.read_sql("SELECT numero_processo, link FROM processos_encontrados ORDER BY data_encontrado DESC LIMIT 100", conn)
     return df
 
-# --- Controle de sessão ---
-if 'primeiro_login' not in st.session_state:
-    st.session_state.primeiro_login = True
-if 'usuario_logado' not in st.session_state:
-    st.session_state.usuario_logado = None
+@app.route('/')
+def index():
+    if 'primeiro_login' not in session:
+        session['primeiro_login'] = True
+    if 'usuario_logado' not in session:
+        session['usuario_logado'] = None
 
-# --- Tela de boas-vindas ---
-if st.session_state.primeiro_login:
-    st.title("🤖 Bem-vindo ao Robô de Precatórios!")
-    st.info("Este robô automatiza a busca por processos com cálculos homologados. Faça login para continuar.")
-    if st.button("Ir para o login"):
-        st.session_state.primeiro_login = False
-    st.stop()
+    if session['primeiro_login']:
+        return render_template('boas_vindas.html')
 
-# --- Tela de login ---
-if not st.session_state.usuario_logado:
-    st.title("🔐 Login")
-    email = st.text_input("Email")
-    senha = st.text_input("Senha", type="password")
-    if st.button("Entrar"):
+    if not session['usuario_logado']:
+        return redirect(url_for('login'))
+
+    return redirect(url_for('dashboard'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        senha = request.form['senha']
         usuario = autenticar_usuario(email, senha)
         if usuario:
-            st.session_state.usuario_logado = usuario
-            st.success(f"Bem-vindo, {usuario}!")
+            session['usuario_logado'] = usuario
+            return redirect(url_for('dashboard'))
         else:
-            st.error("Credenciais inválidas.")
-    st.stop()
+            return render_template('login.html', erro='Credenciais inválidas.')
+    return render_template('login.html')
 
-# --- Tela principal ---
-st.title("📄 Processos Encontrados")
-st.write(f"Usuário: {st.session_state.usuario_logado}")
+@app.route('/dashboard')
+def dashboard():
+    if not session.get('usuario_logado'):
+        return redirect(url_for('login'))
 
-processos_df = carregar_processos()
-if not processos_df.empty:
-    for index, row in processos_df.iterrows():
-        st.markdown(f"**{row['numero_processo']}** — [Acessar processo]({row['link']})")
-else:
-    st.warning("Nenhum processo encontrado no momento.")
+    processos_df = carregar_processos()
+    processos = processos_df.to_dict(orient='records')
+    return render_template('dashboard.html', usuario=session['usuario_logado'], processos=processos)
+
+@app.route('/ir_login', methods=['POST'])
+def ir_login():
+    session['primeiro_login'] = False
+    return redirect(url_for('login'))
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8501, debug=True)
+
