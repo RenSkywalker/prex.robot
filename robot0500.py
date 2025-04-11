@@ -5,6 +5,7 @@ import psycopg2
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from datetime import datetime
 
 # Função para conexão com o banco
 def conectar_banco():
@@ -16,7 +17,7 @@ def conectar_banco():
         port="5432"
     )
 
-# Função para verificar se o processo já foi registrado
+# Verifica se o processo já foi registrado
 def processo_ja_registrado(processo):
     conn = conectar_banco()
     cursor = conn.cursor()
@@ -30,7 +31,7 @@ def processo_ja_registrado(processo):
     conn.close()
     return resultado is not None
 
-# Função para registrar processo no banco
+# Registra processo no banco
 def registrar_processo(processo, encontrado):
     tabela = "processos_encontrados" if encontrado else "processos_nao_encontrados"
     conn = conectar_banco()
@@ -52,25 +53,24 @@ def gerar_numero_processo():
     ano_fixo = random.choice([2024, 2025])
     return f"{prefixo_fixo}{numeros_aleatorios}.{ano_fixo}.8.26.0500"
 
-# Configuração do WebDriver
-options = webdriver.ChromeOptions()
-options.add_argument("--headless=new")
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
-options.add_argument("--disable-blink-features=AutomationControlled")
+# Verifica se estamos no horário válido
+def dentro_do_horario():
+    agora = datetime.now()
+    return 7 <= agora.hour < 21 and agora.weekday() < 5
 
-try:
+# Configura WebDriver fora do loop
+def iniciar_driver():
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-blink-features=AutomationControlled")
     service = Service()
-    driver = webdriver.Chrome(service=service, options=options)
-except Exception as e:
-    print(f"Erro ao iniciar o WebDriver: {e}")
-    exit(1)
-
-# URL base
-url_tjsp = "https://esaj.tjsp.jus.br/cpopg/abrirConsultaDeRequisitorios.do"
+    return webdriver.Chrome(service=service, options=options)
 
 # Função principal de busca
-def buscar_precatorios_tjsp(processos):
+def buscar_precatorios_tjsp(driver, processos):
+    url_tjsp = "https://esaj.tjsp.jus.br/cpopg/abrirConsultaDeRequisitorios.do"
     for processo in processos:
         if processo_ja_registrado(processo):
             continue
@@ -96,12 +96,10 @@ def buscar_precatorios_tjsp(processos):
             if "<li>Não existem informações disponíveis para os parâmetros informados.</li>" in driver.page_source:
                 print(f"❌ Processo não encontrado: {processo}")
                 registrar_processo(processo, False)
-
             elif url_depois != url_antes and "DW" in url_depois:
                 print(f"✅ Processo encontrado: {processo} - {url_depois}")
                 registrar_processo(processo, True)
-
-            elif url_depois != url_antes and "DW" not in url_depois:
+            elif url_depois != url_antes:
                 print(f"⚠️ URL mudou sem 'DW': {processo} - {url_depois}")
                 registrar_processo(processo, False)
 
@@ -109,11 +107,22 @@ def buscar_precatorios_tjsp(processos):
             print(f"❗ Erro ao buscar precatórios para {processo}: {e}")
             registrar_processo(processo, False)
 
-# Gera e filtra processos
-processos = [gerar_numero_processo() for _ in range(700)]
+# Loop principal do robô
+while True:
+    if dentro_do_horario():
+        print(f"🔄 Iniciando busca de processos às {datetime.now().strftime('%H:%M:%S')}...")
+        processos = [gerar_numero_processo() for _ in range(300)]
+        try:
+            driver = iniciar_driver()
+            buscar_precatorios_tjsp(driver, processos)
+            driver.quit()
+        except Exception as erro:
+            print(f"Erro geral: {erro}")
+        print("⏳ Aguardando 5 minutos até a próxima execução...\n")
+    else:
+        print(f"🕒 Fora do horário de execução. Agora são {datetime.now().strftime('%H:%M:%S')}")
+    time.sleep(300)  # Aguarda 5 minutos antes da próxima verificação
 
-# Inicia busca
-buscar_precatorios_tjsp(processos)
 
 # Encerra driver
 driver.quit()
