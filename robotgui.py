@@ -7,10 +7,10 @@ from datetime import datetime
 def autenticar_usuario(email, senha):
     # Substitua pelos seus dados reais de conexão
     conn = psycopg2.connect(
-        host="SEU_HOST",
-        database="SEU_BANCO",
-        user="SEU_USUARIO",
-        password="SUA_SENHA"
+        host="localhost",
+        database="robo_prex",
+        user="robo_admin",
+        password="cursirenan79"
     )
     cur = conn.cursor()
     cur.execute("SELECT nome FROM usuarios WHERE email = %s AND senha = %s", (email, senha))
@@ -21,10 +21,10 @@ def autenticar_usuario(email, senha):
 
 def carregar_processos():
     conn = psycopg2.connect(
-        host="SEU_HOST",
-        database="SEU_BANCO",
-        user="SEU_USUARIO",
-        password="SUA_SENHA"
+        host="localhost",
+        database="robo_prex",
+        user="robo_prex",
+        password="cursirenan79"
     )
     df = pd.read_sql("SELECT numero_processo, link FROM processos_encontrados ORDER BY data_encontrado DESC LIMIT 100", conn)
     conn.close()
