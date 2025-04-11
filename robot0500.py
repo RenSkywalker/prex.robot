@@ -145,7 +145,7 @@ while True:
         print(msg)
         logging.info(msg)
 
-    time.sleep(300)  # Aguarda 5 minutos antes da próxima verificação
+    time.sleep(120)  # Aguarda 5 minutos antes da próxima verificação
 
 
 
