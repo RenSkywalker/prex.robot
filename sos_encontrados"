@@ -1,0 +1,9 @@
+                                        Table "public.processos_encontrados"
+     Column      |         Type          | Collation | Nullable |                      Default                      
+-----------------+-----------------------+-----------+----------+---------------------------------------------------
+ id              | integer               |           | not null | nextval('processos_encontrados_id_seq'::regclass)
+ numero_processo | character varying(30) |           | not null | 
+Indexes:
+    "processos_encontrados_pkey" PRIMARY KEY, btree (id)
+    "processos_encontrados_numero_processo_key" UNIQUE CONSTRAINT, btree (numero_processo)
+

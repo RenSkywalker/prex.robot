@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>📄 Processos Encontrados</h1>
+    <p>Usuário: {{ usuario }}</p>
+
+    {% if processos %}
+        <ul>
+            {% for processo in processos %}
+                <li><strong>{{ processo[0] }}</strong> — <a href="{{ processo[1] }}" target="_blank">Acessar processo</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum processo encontrado no momento.</p>
+    {% endif %}
+</body>
+</html>
