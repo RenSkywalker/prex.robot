@@ -8,13 +8,14 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = 'nigga'  # Altere para algo seguro
 
-# --- Conexão com o banco ---
+# --- Conexão com o banco (use o IP da sua VM) ---
 def get_db_connection(user, password):
     return psycopg2.connect(
-        host="localhost",
+        host="168.138.150.11",  # ⬅️ Substitua pelo IP público da VM
         database="robo_prex",
         user=user,
-        password=password
+        password=password,
+        port="5432"
     )
 
 # --- Autenticação ---
