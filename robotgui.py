@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify
-from flask_cors import CORS  # 👈 Permitir comunicação com o frontend
+from flask_cors import CORS
 import psycopg2
 import pandas as pd
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)  # 👈 Libera acesso CORS para todas as rotas
-app.secret_key = 'sua_chave_secreta'  # Altere para algo seguro
+CORS(app)
+app.secret_key = 'nigga'  # Altere para algo seguro
 
 # --- Conexão com o banco ---
 def get_db_connection(user, password):
@@ -24,12 +24,14 @@ def autenticar_usuario(email, senha):
     cur.execute("SELECT nome FROM usuarios WHERE email = %s AND senha = %s", (email, senha))
     result = cur.fetchone()
     cur.close()
+    conn.close()
     return result[0] if result else None
 
 # --- Carregar processos encontrados ---
 def carregar_processos():
-    conn = get_db_connection("robo_prex", "cursirenan79")
+    conn = get_db_connection("robo_admin", "cursirenan79")
     df = pd.read_sql("SELECT numero_processo, link FROM processos_encontrados ORDER BY data_encontrado DESC LIMIT 100", conn)
+    conn.close()
     return df
 
 # --- Rotas de frontend (HTML) ---
@@ -102,6 +104,10 @@ def api_processos():
     processos_df = carregar_processos()
     processos = processos_df.to_dict(orient='records')
     return jsonify(processos)
+
+# --- Inicialização ---
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 # --- Inicialização ---
 if __name__ == '__main__':
