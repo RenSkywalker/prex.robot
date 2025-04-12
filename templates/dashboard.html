@@ -42,10 +42,10 @@
     </style>
 </head>
 <body>
-    <h1>📄 Processos Encontrados</h1>
+    <h1>📄 Dashboard de Processos Encontrados</h1>
     <p><strong>Usuário:</strong> {{ usuario }}</p>
 
-    <h2>✅ Processos encontrados (com link e data)</h2>
+    <h2>✅ Processos encontrados</h2>
     {% if processos_futuros %}
         <ul>
             {% for processo in processos_futuros %}
@@ -62,7 +62,7 @@
         <p>Nenhum processo encontrado com link e data ainda.</p>
     {% endif %}
 
-    <h2>🧪 Processos em fase de teste</h2>
+    <h2>🧪 Processos encontrados em fase de teste</h2>
     <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP.</p>
 
     {% if processos_futuros %}
