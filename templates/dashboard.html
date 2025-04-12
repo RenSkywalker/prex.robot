@@ -45,7 +45,7 @@
     <h1>📄 Dashboard de Processos</h1>
     <p><strong>Usuário:</strong> {{ usuario }}</p>
 
-    <h2>✅ Processos encontrados</h2>
+    <h2>✅ Processos encontrado</h2>
     {% if processos_futuros %}
         <ul>
             {% for processo in processos_futuros %}
@@ -62,11 +62,10 @@
 
     <h2>🧪 Processos encontrados na fase de teste</h2>
     <p>Estes processos foram encontrados na fase de teste. Os próximos processos a serem encontrados, aparecerão com a data e link respectivos..</p>
-    
     {% if processos_teste %}
         <ul>
             {% for processo in processos_teste %}
-                <li><strong>{{ processo.processo }}</strong><br></li>
+                 <strong>{{ processo.processo }}</strong></br>
             {% endfor %}
         </ul>
     {% else %}
