@@ -34,14 +34,21 @@ def processo_ja_registrado(processo):
     conn.close()
     return resultado is not None
 
-def registrar_processo(processo, encontrado):
-    tabela = "processos_encontrados" if encontrado else "processos_nao_encontrados"
+def registrar_processo(processo, encontrado, url=None):
     conn = conectar_banco()
     cursor = conn.cursor()
-    cursor.execute(f"""
-        INSERT INTO {tabela} (processo) VALUES (%s)
-        ON CONFLICT DO NOTHING
-    """, (processo,))
+    if encontrado:
+        cursor.execute("""
+            INSERT INTO processos_encontrados (processo, link, data_encontrado) 
+            VALUES (%s, %s, %s)
+            ON CONFLICT (processo) DO NOTHING
+        """, (processo, url, datetime.now()))
+    else:
+        cursor.execute("""
+            INSERT INTO processos_nao_encontrados (processo) 
+            VALUES (%s)
+            ON CONFLICT DO NOTHING
+        """, (processo,))
     conn.commit()
     cursor.close()
     conn.close()
@@ -101,7 +108,7 @@ def buscar_precatorios_tjsp(driver, processos):
                 msg = f"✅ Processo encontrado: {processo} - {url_depois}"
                 print(msg)
                 logging.info(msg)
-                registrar_processo(processo, True)
+                registrar_processo(processo, True, url_depois)
             elif url_depois != url_antes:
                 msg = f"⚠️ URL mudou sem 'DW': {processo} - {url_depois}"
                 print(msg)
