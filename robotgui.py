@@ -25,7 +25,7 @@ def autenticar_usuario(email, senha):
 # --- Carregar processos encontrados ---
 def carregar_processos():
     conn = get_db_connection("robo_admin", "cursirenan79")
-    df = pd.read_sql("SELECT processo, link FROM processos_encontrados ORDER BY data_encontrado DESC LIMIT 100", conn)
+    df = pd.read_sql("SELECT processo, link, data_encontrado FROM processos_encontrados ORDER BY data_encontrado DESC NULLS LAST", conn)
     conn.close()
     return df
 
@@ -75,7 +75,20 @@ def dashboard():
 
     processos_df = carregar_processos()
     processos = processos_df.to_dict(orient='records')
-    return render_template('dashboard.html', usuario=session['usuario_logado'], processos=processos)
+
+    # Separar os processos da fase de teste (sem data_encontrado)
+    fase_teste = [p for p in processos if p['data_encontrado'] is None]
+
+    # Agrupar os demais por data
+    agrupados_por_data = {}
+    for processo in processos:
+        if processo['data_encontrado']:
+            data_str = processo['data_encontrado'].strftime('%d/%m/%Y')
+            if data_str not in agrupados_por_data:
+                agrupados_por_data[data_str] = []
+            agrupados_por_data[data_str].append(processo)
+
+    return render_template('dashboard.html', usuario=session['usuario_logado'], fase_teste=fase_teste, agrupados_por_data=agrupados_por_data)
 
 @app.route('/ir_login', methods=['POST'])
 def ir_login():
@@ -99,5 +112,3 @@ def api_processos():
     processos_df = carregar_processos()
     processos = processos_df.to_dict(orient='records')
     return jsonify(processos)
-
-
