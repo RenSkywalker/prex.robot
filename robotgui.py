@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = 'nigga'  # Altere para algo seguro
 
-# --- Conexão com o banco (use o IP da sua VM) ---
+# --- Conexão com o banco ---
 def get_db_connection(user, password):
     return psycopg2.connect("postgresql://postgres:hoqTncYzOHdQShgdVDdEPqJIOJluwpKZ@yamabiko.proxy.rlwy.net:56223/railway")
 
@@ -25,8 +25,14 @@ def autenticar_usuario(email, senha):
 # --- Carregar processos encontrados ---
 def carregar_processos():
     conn = get_db_connection("robo_admin", "cursirenan79")
-    df_teste = pd.read_sql("SELECT processo FROM processos_encontrados WHERE data_encontrado IS NULL AND link IS NULL ORDER BY processo", conn)
-    df_futuros = pd.read_sql("SELECT processo, link, data_encontrado FROM processos_encontrados WHERE data_encontrado IS NOT NULL ORDER BY data_encontrado DESC", conn)
+    df_teste = pd.read_sql(
+        "SELECT processo FROM processos_encontrados WHERE data_encontrado IS NULL AND link IS NULL ORDER BY processo",
+        conn
+    )
+    df_futuros = pd.read_sql(
+        "SELECT processo, link, data_encontrado FROM processos_encontrados WHERE data_encontrado IS NOT NULL ORDER BY data_encontrado DESC",
+        conn
+    )
     conn.close()
     return df_teste, df_futuros
 
@@ -74,22 +80,17 @@ def dashboard():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    processos_df = carregar_processos()
-    processos = processos_df.to_dict(orient='records')
+    df_teste, df_futuros = carregar_processos()
 
-    # Separar os processos da fase de teste (sem data_encontrado)
-    fase_teste = [p for p in processos if p['data_encontrado'] is None]
+    processos_teste = df_teste.to_dict(orient='records')
+    processos_futuros = df_futuros.to_dict(orient='records')
 
-    # Agrupar os demais por data
-    agrupados_por_data = {}
-    for processo in processos:
-        if processo['data_encontrado']:
-            data_str = processo['data_encontrado'].strftime('%d/%m/%Y')
-            if data_str not in agrupados_por_data:
-                agrupados_por_data[data_str] = []
-            agrupados_por_data[data_str].append(processo)
-
-    return render_template('dashboard.html', usuario=session['usuario_logado'], fase_teste=fase_teste, agrupados_por_data=agrupados_por_data)
+    return render_template(
+        'dashboard.html',
+        usuario=session['usuario_logado'],
+        processos_teste=processos_teste,
+        processos_futuros=processos_futuros
+    )
 
 @app.route('/ir_login', methods=['POST'])
 def ir_login():
@@ -105,11 +106,16 @@ def api_login():
 
     usuario = autenticar_usuario(email, senha)
     if usuario:
-        return jsonify({ 'nome': usuario }), 200
-    return jsonify({ 'message': 'Credenciais inválidas' }), 401
+        return jsonify({'nome': usuario}), 200
+    return jsonify({'message': 'Credenciais inválidas'}), 401
 
 @app.route('/api/processos', methods=['GET'])
 def api_processos():
-    processos_df = carregar_processos()
-    processos = processos_df.to_dict(orient='records')
-    return jsonify(processos)
+    df_teste, df_futuros = carregar_processos()
+    processos_teste = df_teste.to_dict(orient='records')
+    processos_futuros = df_futuros.to_dict(orient='records')
+    return jsonify({
+        "fase_teste": processos_teste,
+        "futuros": processos_futuros
+    })
+
