@@ -25,7 +25,7 @@ def autenticar_usuario(email, senha):
 # --- Carregar processos encontrados ---
 def carregar_processos():
     conn = get_db_connection("robo_admin", "cursirenan79")
-    df_teste = pd.read_sql("SELECT processo FROM processos_encontrados WHERE data_encontrado, link IS NULL ORDER BY processo", conn)
+    df_teste = pd.read_sql("SELECT processo FROM processos_encontrados WHERE data_encontrado IS NULL AND link IS NULL ORDER BY processo", conn)
     df_futuros = pd.read_sql("SELECT processo, link, data_encontrado FROM processos_encontrados WHERE data_encontrado IS NOT NULL ORDER BY data_encontrado DESC", conn)
     conn.close()
     return df_teste, df_futuros
