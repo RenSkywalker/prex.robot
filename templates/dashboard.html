@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard de Processos</title>
+    <title>Dashboard</title>
     <meta http-equiv="refresh" content="60"> <!-- Atualiza a cada 60 segundos -->
     <style>
         body {
@@ -42,35 +42,41 @@
     </style>
 </head>
 <body>
-    <h1>📄 Dashboard de Processos</h1>
+    <h1>📄 Processos Encontrados</h1>
     <p><strong>Usuário:</strong> {{ usuario }}</p>
 
-    <h2>✅ Processos encontrado</h2>
+    <h2>✅ Processos encontrados (com link e data)</h2>
     {% if processos_futuros %}
         <ul>
             {% for processo in processos_futuros %}
-                <li>
-                    <strong>{{ processo.processo }}</strong></br>
-                    Encontrado em <em>{{ processo.data_encontrado.strftime('%d/%m/%Y %H:%M:%S') }}</em><br>
-                    <a href="{{ processo.link }}" target="_blank">Acessar processo</a>
-               </li>
+                {% if processo.link and processo.data_encontrado %}
+                    <li>
+                        <strong>{{ processo.processo }}</strong><br>
+                        Encontrado em <em>{{ processo.data_encontrado.strftime('%d/%m/%Y %H:%M:%S') }}</em><br>
+                        <a href="{{ processo.link }}" target="_blank">Acessar processo</a>
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     {% else %}
-        <p>Nenhum processo encontrado no momento.</p>
+        <p>Nenhum processo encontrado com link e data ainda.</p>
     {% endif %}
 
-    <h2>🧪 Processos encontrados na fase de teste</h2>
-    <p>Estes processos foram encontrados na fase de teste. Os próximos processos a serem encontrados, aparecerão com a data e link respectivos..</p>
-    {% if processos_teste %}
+    <h2>🧪 Processos em fase de teste</h2>
+    <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP.</p>
+
+    {% if processos_futuros %}
         <ul>
-            {% for processo in processos_teste %}
-                 <strong>{{ processo.processo }}</strong></br>
+            {% for processo in processos_futuros %}
+                {% if not processo.link or not processo.data_encontrado %}
+                    <li><strong>{{ processo.processo }}</strong></li>
+                {% endif %}
             {% endfor %}
         </ul>
     {% else %}
-        <p>Nenhum processo teste encontrado no momento.</p>
+        <p>Nenhum processo encontrado na fase de teste.</p>
     {% endif %}
 </body>
 </html>
+
 
