@@ -41,15 +41,28 @@
     <h1>📄 Processos Encontrados</h1>
     <p>Usuário: {{ usuario }}</p>
 
-    {% if processos %}
+    {% if fase_teste %}
+        <h2>Processos encontrados na fase de teste</h2>
         <ul>
-            {% for processo in processos %}
-                <li><strong>{{ processo.numero_processo }}</strong> — <a href="{{ processo.link }}" target="_blank">Acessar processo</a></li>
+            {% for processo in fase_teste %}
+                <li><strong>{{ processo.numero_processo }}</strong></li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>Nenhum processo encontrado no momento.</p>
+        <p>Nenhum processo encontrado na fase de teste.</p>
+    {% endif %}
+
+    {% if processos_por_data %}
+        {% for data, processos in processos_por_data.items() %}
+            <h2>{{ data.strftime('%d/%m/%Y') }} — Processos Encontrados</h2>
+            <ul>
+                {% for processo in processos %}
+                    <li><strong>{{ processo.numero_processo }}</strong> — <a href="{{ processo.link }}" target="_blank">Acessar processo</a></li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>Nenhum processo encontrado até o momento.</p>
     {% endif %}
 </body>
 </html>
-
