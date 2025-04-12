@@ -3,6 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
+    <meta http-equiv="refresh" content="60"> <!-- Atualização a cada 60 segundos -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 1.1em;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #fff;
+            padding: 12px 18px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>📄 Processos Encontrados</h1>
@@ -11,7 +44,7 @@
     {% if processos %}
         <ul>
             {% for processo in processos %}
-                <li><strong>{{ processo[0] }}</strong> — <a href="{{ processo[1] }}" target="_blank">Acessar processo</a></li>
+                <li><strong>{{ processo.numero_processo }}</strong> — <a href="{{ processo.link }}" target="_blank">Acessar processo</a></li>
             {% endfor %}
         </ul>
     {% else %}
@@ -19,3 +52,4 @@
     {% endif %}
 </body>
 </html>
+
