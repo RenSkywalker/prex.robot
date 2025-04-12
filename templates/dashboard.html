@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <title>Dashboard de Processos</title>
     <meta http-equiv="refresh" content="60"> <!-- Atualiza a cada 60 segundos -->
     <style>
         body {
@@ -42,11 +42,11 @@
     </style>
 </head>
 <body>
-    <h1>📄 Processos Encontrados</h1>
+    <h1>📄 Dashboard de Processos</h1>
     <p><strong>Usuário:</strong> {{ usuario }}</p>
 
-    <h2>🔍 Fase de Teste</h2>
-    <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP.</p>
+    <h2>🧪 Processos encontrados na fase de teste</h2>
+    <p>Estes processos foram encontrados na fase de teste. Os próximos processos a serem encontrados, aparecerão com a data e link respectivos..</p>
 
     {% if processos_teste %}
         <ul>
@@ -55,10 +55,10 @@
             {% endfor %}
         </ul>
     {% else %}
-        <p>Nenhum processo encontrado na fase de teste.</p>
+        <p>Nenhum processo em fase de teste no momento.</p>
     {% endif %}
 
-    <h2>📆 Processos Encontrados Recentemente</h2>
+    <h2>✅ Processos encontrados</h2>
     {% if processos_futuros %}
         <ul>
             {% for processo in processos_futuros %}
@@ -75,4 +75,3 @@
 </body>
 </html>
 
-</html>
