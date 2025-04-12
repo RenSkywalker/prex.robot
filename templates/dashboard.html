@@ -45,32 +45,32 @@
     <h1>📄 Dashboard de Processos</h1>
     <p><strong>Usuário:</strong> {{ usuario }}</p>
 
-    <h2>🧪 Processos encontrados na fase de teste</h2>
-    <p>Estes processos foram encontrados na fase de teste. Os próximos processos a serem encontrados, aparecerão com a data e link respectivos..</p>
-
-    {% if processos_teste %}
-        <ul>
-            {% for processo in processos_teste %}
-                <li><strong>{{ processo.processo }}</strong></li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Nenhum processo em fase de teste no momento.</p>
-    {% endif %}
-
     <h2>✅ Processos encontrados</h2>
     {% if processos_futuros %}
         <ul>
             {% for processo in processos_futuros %}
                 <li>
-                    <strong>{{ processo.processo }}</strong><br>
+                    <strong>{{ processo.processo }}</strong></br>
                     Encontrado em <em>{{ processo.data_encontrado.strftime('%d/%m/%Y %H:%M:%S') }}</em><br>
                     <a href="{{ processo.link }}" target="_blank">Acessar processo</a>
-                </li>
+               </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>Nenhum processo encontrado com link e data ainda.</p>
+        <p>Nenhum processo encontrado no momento.</p>
+    {% endif %}
+
+    <h2>🧪 Processos encontrados na fase de teste</h2>
+    <p>Estes processos foram encontrados na fase de teste. Os próximos processos a serem encontrados, aparecerão com a data e link respectivos..</p>
+    
+    {% if processos_teste %}
+        <ul>
+            {% for processo in processos_teste %}
+                <li><strong>{{ processo.processo }}</strong><br></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum processo teste encontrado no momento.</p>
     {% endif %}
 </body>
 </html>
