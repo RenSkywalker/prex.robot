@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <meta http-equiv="refresh" content="60"> <!-- Atualização a cada 60 segundos -->
+    <meta http-equiv="refresh" content="60"> <!-- Atualiza a cada 60 segundos -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,6 +12,10 @@
         }
         h1 {
             color: #333;
+        }
+        h2 {
+            color: #555;
+            margin-top: 40px;
         }
         p {
             font-size: 1.1em;
@@ -39,9 +43,10 @@
 </head>
 <body>
     <h1>📄 Processos Encontrados</h1>
-    <p>Usuário: {{ usuario }}</p>
+    <p><strong>Usuário:</strong> {{ usuario }}</p>
 
-    <h2>Os processos abaixo foram encontrados na fase de teste. Os próximos processos encontrados virão com a data do achado e com o link do redirecionamento do site.</h2>
+    <h2>🔍 Fase de Teste</h2>
+    <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP.</p>
 
     {% if processos_teste %}
         <ul>
@@ -53,19 +58,21 @@
         <p>Nenhum processo encontrado na fase de teste.</p>
     {% endif %}
 
+    <h2>📆 Processos Encontrados Recentemente</h2>
     {% if processos_futuros %}
-        <h2>Processos Encontrados Recentemente</h2>
         <ul>
             {% for processo in processos_futuros %}
                 <li>
-                    <strong>{{ processo.processo }}</strong> 
-                    — Encontrado em {{ processo.data_encontrado.strftime('%d/%m/%Y %H:%M:%S') }} 
-                    — <a href="{{ processo.link }}" target="_blank">Acessar processo</a>
+                    <strong>{{ processo.processo }}</strong><br>
+                    Encontrado em <em>{{ processo.data_encontrado.strftime('%d/%m/%Y %H:%M:%S') }}</em><br>
+                    <a href="{{ processo.link }}" target="_blank">Acessar processo</a>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>Nenhum processo futuro encontrado até o momento.</p>
+        <p>Nenhum processo encontrado com link e data ainda.</p>
     {% endif %}
 </body>
+</html>
+
 </html>
