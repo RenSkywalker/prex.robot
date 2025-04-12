@@ -25,7 +25,7 @@ def autenticar_usuario(email, senha):
 # --- Carregar processos encontrados ---
 def carregar_processos():
     conn = get_db_connection("robo_admin", "cursirenan79")
-    df = pd.read_sql("SELECT numero_processo, link FROM processos_encontrados ORDER BY data_encontrado DESC LIMIT 100", conn)
+    df = pd.read_sql("SELECT processo, link FROM processos_encontrados ORDER BY data_encontrado DESC LIMIT 100", conn)
     conn.close()
     return df
 
