@@ -10,7 +10,7 @@ app.secret_key = 'nigga'  # Altere para algo seguro
 
 # --- Conexão com o banco (use o IP da sua VM) ---
 def get_db_connection(user, password):
-    return psycopg2.connect(postgresql://postgres:hoqTncYzOHdQShgdVDdEPqJIOJluwpKZ@yamabiko.proxy.rlwy.net:56223/railway)
+    return psycopg2.connect("postgresql://postgres:hoqTncYzOHdQShgdVDdEPqJIOJluwpKZ@yamabiko.proxy.rlwy.net:56223/railway")
 
 # --- Autenticação ---
 def autenticar_usuario(email, senha):
