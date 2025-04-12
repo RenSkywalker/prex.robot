@@ -19,13 +19,7 @@ print(f"🚀 Iniciando script robot0500.py em {datetime.now().strftime('%Y-%m-%d
 
 # === Função para conexão com o banco ===
 def conectar_banco():
-    return psycopg2.connect(
-        dbname="robo_prex",
-        user="robo_admin",
-        password="cursirenan79",
-        host="localhost",
-        port="5432"
-    )
+    return psycopg2.connect(postgresql://postgres:hoqTncYzOHdQShgdVDdEPqJIOJluwpKZ@yamabiko.proxy.rlwy.net:56223/railway)
 
 def processo_ja_registrado(processo):
     conn = conectar_banco()
