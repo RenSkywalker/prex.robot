@@ -41,28 +41,31 @@
     <h1>📄 Processos Encontrados</h1>
     <p>Usuário: {{ usuario }}</p>
 
-    {% if fase_teste %}
-        <h2>Processos encontrados na fase de teste</h2>
+    <h2>Os processos abaixo foram encontrados na fase de teste. Os próximos processos encontrados virão com a data do achado e com o link do redirecionamento do site.</h2>
+
+    {% if processos_teste %}
         <ul>
-            {% for processo in fase_teste %}
-                <li><strong>{{ processo.numero_processo }}</strong></li>
+            {% for processo in processos_teste %}
+                <li><strong>{{ processo.processo }}</strong></li>
             {% endfor %}
         </ul>
     {% else %}
         <p>Nenhum processo encontrado na fase de teste.</p>
     {% endif %}
 
-    {% if processos_por_data %}
-        {% for data, processos in processos_por_data.items() %}
-            <h2>{{ data.strftime('%d/%m/%Y') }} — Processos Encontrados</h2>
-            <ul>
-                {% for processo in processos %}
-                    <li><strong>{{ processo.numero_processo }}</strong> — <a href="{{ processo.link }}" target="_blank">Acessar processo</a></li>
-                {% endfor %}
-            </ul>
-        {% endfor %}
+    {% if processos_futuros %}
+        <h2>Processos Encontrados Recentemente</h2>
+        <ul>
+            {% for processo in processos_futuros %}
+                <li>
+                    <strong>{{ processo.processo }}</strong> 
+                    — Encontrado em {{ processo.data_encontrado.strftime('%d/%m/%Y %H:%M:%S') }} 
+                    — <a href="{{ processo.link }}" target="_blank">Acessar processo</a>
+                </li>
+            {% endfor %}
+        </ul>
     {% else %}
-        <p>Nenhum processo encontrado até o momento.</p>
+        <p>Nenhum processo futuro encontrado até o momento.</p>
     {% endif %}
 </body>
 </html>
