@@ -249,8 +249,8 @@ def baixar_planilha_mensal():
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
-    @app.route('/graficos')
-def graficos():
+   @app.route('/graficos')
+    def graficos():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
