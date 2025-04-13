@@ -35,27 +35,34 @@
             font-size: 1.8rem;
             cursor: pointer;
             position: absolute;
-            left: 50px; /* movido mais para direita */
+            left: 50px;
             top: 22px;
             color: white;
             z-index: 1003;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-icon.open {
+            transform: rotate(90deg);
         }
 
         .sidebar {
-            width: 260px; /* aumentada para garantir ocultação total */
+            width: 260px;
             background-color: #1e0030;
-            padding: 100px 20px 20px 20px;
             height: 100%;
             position: fixed;
             top: 0;
-            left: -260px; /* completamente fora da tela */
-            transition: 0.3s ease;
+            left: -260px;
+            transition: left 0.3s ease, padding 0.3s ease;
             z-index: 1002;
             overflow-y: auto;
+            box-sizing: border-box;
+            padding: 100px 0 20px 0;
         }
 
         .sidebar.active {
             left: 0;
+            padding: 100px 20px 20px 20px;
         }
 
         .overlay {
@@ -144,7 +151,7 @@
 
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+    <span class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</span>
 
     <header>
         <h1>📄 Dashboard</h1>
@@ -205,8 +212,17 @@
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
+            const menuIcon = document.getElementById('menuIcon');
+
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
+            menuIcon.classList.toggle('open');
+
+            if (menuIcon.classList.contains('open')) {
+                menuIcon.textContent = '✕';
+            } else {
+                menuIcon.textContent = '☰';
+            }
         }
     </script>
 
