@@ -34,14 +34,12 @@
         .menu-icon {
             font-size: 1.8rem;
             cursor: pointer;
-            position: fixed;
+            position: absolute;
             left: 50px;
             top: 22px;
             color: white;
-            z-index: 1100;
+            z-index: 1003;
             transition: transform 0.3s ease;
-            background-color: transparent;
-            border: none;
         }
 
         .menu-icon.open {
@@ -50,7 +48,7 @@
 
         .sidebar {
             width: 260px;
-            background-color: #000;
+            background-color: #1e0030;
             height: 100%;
             position: fixed;
             top: 0;
@@ -162,8 +160,7 @@
     <div class="sidebar" id="sidebar">
         <h2>👤 {{ usuario }}</h2>
         <ul>
-            <!-- Alteração feita aqui -->
-            <li><a href="/fase-teste">🧪 Processos encontrados em fase de teste</a></li> <!-- Redirecionamento completo -->
+            <li><a href="#fase-teste">🧪 Processos em fase de teste</a></li>
             <li><a href="#gerar-planilhas">📁 Gerar planilhas</a></li>
             <li><a href="#grafico-controle">📊 Gráfico de controle</a></li>
         </ul>
@@ -189,14 +186,15 @@
             <p>Nenhum processo encontrado com link e data ainda.</p>
         {% endif %}
 
-        <!-- Fase de Teste -->
         <h2 id="fase-teste">🧪 Processos encontrados em fase de teste</h2>
-        <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data de quando foram encontrados e link do TJSP.</p>
+        <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP.</p>
 
-        {% if processos_teste %}
+        {% if processos_futuros %}
             <ul>
-                {% for processo in processos_teste %}
-                    <li><strong>{{ processo.processo }}</strong></li>
+                {% for processo in processos_futuros %}
+                    {% if not processo.link or not processo.data_encontrado %}
+                        <li><strong>{{ processo.processo }}</strong></li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         {% else %}
@@ -230,7 +228,6 @@
 
 </body>
 </html>
-
 
 
 
