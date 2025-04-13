@@ -194,7 +194,6 @@
         {% if processos_teste %}
             <ul>
                 {% for processo in processos_teste %}
-                    {% if not processo.link or not processo.data_encontrado %}
                         <li><strong>{{ processo.processo }}</strong></li>
                     {% endif %}
                 {% endfor %}
