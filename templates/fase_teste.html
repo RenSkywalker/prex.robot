@@ -6,14 +6,113 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
       background-color: #2c003e;
-      color: white;
-      padding: 40px;
+      color: #fff;
     }
 
-    h1 {
+    header {
+      background-color: #000;
+      padding: 20px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1001;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
       font-size: 2rem;
+      color: white;
+    }
+
+    .menu-icon {
+      font-size: 1.8rem;
+      cursor: pointer;
+      position: fixed;
+      left: 50px;
+      top: 22px;
+      color: white;
+      z-index: 1100;
+      transition: transform 0.3s ease;
+      background-color: transparent;
+      border: none;
+    }
+
+    .menu-icon.open {
+      transform: rotate(90deg);
+    }
+
+    .sidebar {
+      width: 260px;
+      background-color: #000;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: -260px;
+      transition: left 0.3s ease, padding 0.3s ease;
+      z-index: 1002;
+      overflow-y: auto;
+      box-sizing: border-box;
+      padding: 100px 0 20px 0;
+    }
+
+    .sidebar.active {
+      left: 0;
+      padding: 100px 20px 20px 20px;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      z-index: 1000;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    .sidebar h2 {
+      font-size: 1.2rem;
       margin-bottom: 20px;
+      color: white;
+    }
+
+    .sidebar ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      margin: 10px 0;
+      background-color: #000;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .sidebar a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      display: block;
+    }
+
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      margin-top: 100px;
+      padding: 40px;
     }
 
     ul {
@@ -40,6 +139,7 @@
       font-weight: bold;
       cursor: pointer;
       text-decoration: none;
+      display: inline-block;
     }
 
     .download-button:hover {
@@ -48,23 +148,55 @@
   </style>
 </head>
 <body>
-  <h1>🧪 Processos encontrados em fase de teste</h1>
-  <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP no Dashboard.</p>
-  
-  {% if processos %}
+
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <span class="menu-icon" id="menuIcon" onclick="toggleMenu()">☰</span>
+
+  <header>
+    <h1>🧪 Processos encontrados em fase de teste</h1>
+  </header>
+
+  <div class="sidebar" id="sidebar">
+    <h2>👤 {{ usuario }}</h2>
     <ul>
-      {% for processo in processos %}
-      {% if not processo.link or not processo.data_encontrado %}
-        <li><strong>{{ processo.processo }}</strong></li>
-          {%endif%}
-      {% endfor %}
+      <li><a href="/fase-teste" class="download-button">🧪 Processos encontrados em fase de teste</a></li>
+      <li><a href="/gerar-planilhas-periodicas" class="download-button">📁 Gerar planilhas periódicas</a></li>
+      <li><a href="/graficos" class="download-button">📊 Gráfico de controle</a></li>
     </ul>
-  {% else %}
-    <p>Nenhum processo encontrado na fase de teste.</p>
-  {% endif %}
+  </div>
 
-  <!-- Link para baixar a planilha com os processos encontrados em fase de teste -->
-  <a class="download-button" href="/fase-teste/baixar">⬇️ Baixar planilha Excel</a>
+  <main>
+    <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP no Dashboard.</p>
 
+    {% if processos %}
+      <ul>
+        {% for processo in processos %}
+        {% if not processo.link or not processo.data_encontrado %}
+          <li><strong>{{ processo.processo }}</strong></li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Nenhum processo encontrado na fase de teste.</p>
+    {% endif %}
+
+    <a class="download-button" href="/fase-teste/baixar">⬇️ Baixar planilha Excel</a>
+  </main>
+
+  <script>
+    function toggleMenu() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const menuIcon = document.getElementById('menuIcon');
+
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+      menuIcon.classList.toggle('open');
+
+      menuIcon.textContent = menuIcon.classList.contains('open') ? '✕' : '☰';
+    }
+  </script>
 </body>
 </html>
+
