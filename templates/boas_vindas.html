@@ -1,96 +1,101 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bem-vindo(a)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(to bottom, #000000, #ffffff);
-            color: #1c1c1c;
-            font-family: 'Roboto', sans-serif;
-            text-align: center;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bem-vindo(a)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(to bottom, #000000, #ffffff);
+      color: #1c1c1c;
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-        main {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-            animation: slideUp 1s ease-out forwards;
-            opacity: 0;
-        }
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      animation: slideUp 1s ease-out forwards;
+      opacity: 0;
+    }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
 
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            max-width: 600px;
-            font-weight: bold;
-        }
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      max-width: 600px;
+      font-weight: bold;
+    }
 
-        .btn {
-            background-color: #004F91;
-            color: white;
-            font-size: 1.2rem;
-            padding: 12px 36px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
+    .btn {
+      background-color: #004F91;
+      color: white;
+      font-size: 1.2rem;
+      padding: 12px 36px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
 
-        .btn:hover {
-            background-color: #003D73;
-        }
+    .btn:hover {
+      background-color: #003D73;
+    }
 
-        .robot-img {
-            width: 180px;
-            height: auto;
-            margin-bottom: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
+    .robot-img {
+      width: 200px;
+      height: auto;
+      margin-bottom: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
 
-        @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-    </style>
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
 </head>
 <body>
-    <main>
-        <!-- Imagem de robô mais tech e realista -->
-        <img src="https://cdn.pixabay.com/photo/2023/03/27/19/03/robot-7882673_1280.png" alt="Robô Prex" class="robot-img" />
-        
-        <h1>🤖 Olá, tudo bem? Me chamo Sahur, o robô mineirador da Prex!</h1>
-        
-        <p><strong>Bem-vindo(a) ao Robô de Precatórios 0500 1.0. Fui criado para auxiliar a Prex encontrar números de precatórios disponíveis. Espero ser útil!</strong></p>
-        
-        <form action="{{ url_for('login') }}" method="get">
-            <button type="submit" class="btn">Ir para o login</button>
-        </form>
-    </main>
+  <main>
+    <!-- Nova imagem de robô realista e tech -->
+    <img
+      src="https://i.imgur.com/yXJZp3Q.png"
+      alt="Robô Prex"
+      class="robot-img"
+    />
+    
+    <h1>Olá, tudo bem? Me chamo Sahur, o robô mineirador da Prex!</h1>
+    
+    <p><strong>Bem-vindo(a) ao Robô de Precatórios 1.0. Fui criado para auxiliar a Prex encontrar números de precatórios disponíveis. Espero ser útil!</strong></p>
+    
+    <form action="{{ url_for('login') }}" method="get">
+      <button type="submit" class="btn">Ir para o login</button>
+    </form>
+  </main>
 </body>
 </html>
+
 
 
