@@ -133,7 +133,7 @@ def fase_teste():
 @app.route('/fase-teste/baixar')
 def baixar_planilha_fase_teste():
   _, df_futuros = carregar_processos()
-    output = io.BytesIO()
+        output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         df_futuros.to_excel(writer, index=False, sheet_name='FaseTeste')
 
