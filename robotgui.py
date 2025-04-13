@@ -128,7 +128,7 @@ def fase_teste():
 
     df_teste, _ = carregar_processos()
     processos = df_teste.to_dict(orient='records')
-    return render_template('fase_teste.html', processo=processo)
+    return render_template('fase_teste.html', processos=processos)
 
 @app.route('/fase-teste/baixar')
 def baixar_planilha_fase_teste():
