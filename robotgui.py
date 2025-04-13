@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, url_for, jsonify, send_file
 from flask_cors import CORS
+from collections import Counter
 import psycopg2
 import pandas as pd
 from datetime import datetime, timedelta
@@ -246,6 +247,28 @@ def baixar_planilha_mensal():
         as_attachment=True,
         download_name=f"Processos_Mensais_{hoje.strftime('%Y-%m-%d')}.xlsx",
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+    @app.route('/graficos')
+def graficos():
+    if not session.get('usuario_logado'):
+        return redirect(url_for('login'))
+
+    processos = session.get('processos_futuros', [])  # ou pegue da fonte correta se já tiver
+
+    datas = [p['data_encontrado'].strftime('%Y-%m-%d') for p in processos if p['data_encontrado']]
+    datas_semana = [p['data_encontrado'].strftime('%Y-%W') for p in processos if p['data_encontrado']]
+    datas_mes = [p['data_encontrado'].strftime('%Y-%m') for p in processos if p['data_encontrado']]
+
+    def agrupar_contagem(datas):
+        contagem = Counter(datas)
+        return [{'data': k, 'quantidade': v} for k, v in sorted(contagem.items())]
+
+    return render_template(
+        'graficos.html',
+        dados_diario=agrupar_contagem(datas),
+        dados_semanal=agrupar_contagem(datas_semana),
+        dados_mensal=agrupar_contagem(datas_mes)
     )
 
 if __name__ == '__main__':
