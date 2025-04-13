@@ -53,7 +53,9 @@
   {% if processos %}
     <ul>
       {% for processo in processos %}
+      {% if not processo.link or not processo.data_encontrado %}
         <li><strong>{{ processo.processo }}</strong></li>
+          {%endif%}
       {% endfor %}
     </ul>
   {% else %}
