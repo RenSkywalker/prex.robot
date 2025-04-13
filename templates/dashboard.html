@@ -162,7 +162,7 @@
     <div class="sidebar" id="sidebar">
         <h2>👤 {{ usuario }}</h2>
         <ul>
-            <li><a href="/fase-teste" class="download button">🧪 Processos em fase de teste</a></li>
+            <li><a href="#fase-teste">🧪 Processos em fase de teste</a></li>
             <li><a href="#gerar-planilhas">📁 Gerar planilhas</a></li>
             <li><a href="#grafico-controle">📊 Gráfico de controle</a></li>
         </ul>
@@ -191,10 +191,12 @@
         <h2 id="fase-teste">🧪 Processos encontrados em fase de teste</h2>
         <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP.</p>
 
-        {% if processos_teste %}
+        {% if processos_futuros %}
             <ul>
-                {% for processo in processos_teste %}
+                {% for processo in processos_futuros %}
+                    {% if not processo.link or not processo.data_encontrado %}
                         <li><strong>{{ processo.processo }}</strong></li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         {% else %}
@@ -228,6 +230,8 @@
 
 </body>
 </html>
+
+
 
 
 
