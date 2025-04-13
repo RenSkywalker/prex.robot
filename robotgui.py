@@ -274,7 +274,12 @@ def graficos():
         dados_semanal=agrupar_contagem(datas_semana),
         dados_mensal=agrupar_contagem(datas_mes)
     )
-
+    
+@app.route('/logout')
+def logout():
+    session.clear()  # Remove todos os dados da sessão
+    return redirect(url_for('login'))  # Redireciona para a tela de login
+    
 if __name__ == '__main__':
     app.run(debug=True)
 
