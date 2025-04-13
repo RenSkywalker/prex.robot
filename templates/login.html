@@ -1,22 +1,95 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(to bottom, #000000, #ffffff);
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #1c1c1c;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      text-align: left;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #004F91;
+      color: white;
+      font-size: 1.1rem;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #003D73;
+    }
+
+    .error {
+      color: red;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
+  <main>
     <h1>🔐 Login</h1>
     {% if erro %}
-        <p style="color: red;">{{ erro }}</p>
+      <p class="error">{{ erro }}</p>
     {% endif %}
+
     <form method="post">
-        <label>Email:</label>
-        <input type="text" name="email" required><br><br>
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" required>
 
-        <label>Senha:</label>
-        <input type="password" name="senha" required><br><br>
+      <label for="senha">Senha:</label>
+      <input type="password" id="senha" name="senha" required>
 
-        <button type="submit">Entrar</button>
+      <button type="submit">Entrar</button>
     </form>
+  </main>
 </body>
 </html>
+
