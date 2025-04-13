@@ -7,17 +7,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(to bottom, #FBB03B, #F7A800); /* Cores de fundo */
-            color: white;
+            background: linear-gradient(to bottom, #000000, #ffffff); /* Degradê preto pro branco */
+            color: #1c1c1c;
             font-family: 'Roboto', sans-serif;
             text-align: center;
             padding: 0;
             margin: 0;
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            padding: 20px 0;
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            animation: slideUp 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        header img {
+            height: 60px;
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            animation: fadeIn 2s ease-out; /* Animação de fade in */
+            padding: 40px 20px;
+            animation: slideUp 1.4s ease-out forwards;
+            opacity: 0;
         }
 
         h1 {
@@ -28,24 +52,26 @@
         p {
             font-size: 1.2rem;
             margin-bottom: 30px;
+            max-width: 600px;
         }
 
         .btn {
             background-color: #004F91;
             color: white;
             font-size: 1.2rem;
-            padding: 10px 30px;
+            padding: 12px 36px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
+            transition: background-color 0.3s ease;
         }
 
         .btn:hover {
             background-color: #003D73;
         }
 
-        img {
+        .robot-img {
             width: 160px;
             height: auto;
             margin-bottom: 30px;
@@ -53,26 +79,31 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        @keyframes fadeIn {
+        @keyframes slideUp {
             from {
+                transform: translateY(50px);
                 opacity: 0;
-                transform: translateY(20px);
             }
             to {
-                opacity: 1;
                 transform: translateY(0);
+                opacity: 1;
             }
         }
     </style>
 </head>
 <body>
-    <div>
-        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Robô Prex" />
-        <h1> Olá, tudo bem? Me chamo Sahur, o robô mineirador da Prex!</h1>
+    <header>
+        <!-- Logo da Prex -->
+        <img src="https://prexprecatorios.com.br/img/logoPrex2.webp" alt="Logo Prex">
+    </header>
+
+    <main>
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Robô Prex" class="robot-img" />
+        <h1>Olá, tudo bem? Me chamo Sahur, o robô mineirador da Prex!</h1>
         <p>Bem-vindo(a) ao Robô de Precatórios 1.0. Fui criado para auxiliar a Prex encontrar números de precatórios disponíveis. Espero ser útil!</p>
         <form action="{{ url_for('login') }}" method="get">
             <button type="submit" class="btn">Ir para o login</button>
         </form>
-    </div>
+    </main>
 </body>
 </html>
