@@ -191,9 +191,9 @@
         <h2 id="fase-teste">🧪 Processos encontrados em fase de teste</h2>
         <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP.</p>
 
-        {% if processos_futuros %}
+        {% if processos_teste %}
             <ul>
-                {% for processo in processos_futuros %}
+                {% for processo in processos_teste %}
                     {% if not processo.link or not processo.data_encontrado %}
                         <li><strong>{{ processo.processo }}</strong></li>
                     {% endif %}
