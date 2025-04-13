@@ -9,48 +9,65 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #1a001f; /* fundo roxo escuro */
+            color: white;
+            text-align: center; /* centraliza todo o conteúdo */
         }
         .container {
             width: 80%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
+        }
+        h2, p {
+            font-weight: bold;
         }
         h2 {
-            text-align: center;
-            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 18px;
+            margin-bottom: 30px;
         }
         .btn {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 15px 30px;
             margin: 10px;
-            background-color: #007BFF;
-            color: white;
+            background-color: white;
+            color: black; /* texto preto */
             text-align: center;
             text-decoration: none;
-            border-radius: 5px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #e0e0e0;
+        }
+        form {
+            display: inline-block;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>📁Gerar Planilhas Periódicas</h2>
+        <h2>📁 Gerar Planilhas Periódicas</h2>
         <p>Aqui você pode baixar as planilhas encontradas periodicamente.</p>
 
         <!-- Formulários para baixar as planilhas -->
         <form action="{{ url_for('baixar_planilha_diaria') }}" method="GET">
-            <button type="submit" class="btn">Baixar Planilha Diária</button>
+            <button type="submit" class="btn">📅 Planilha Diária</button>
         </form>
 
         <form action="{{ url_for('baixar_planilha_semanal') }}" method="GET">
-            <button type="submit" class="btn">Baixar Planilha Semanal</button>
+            <button type="submit" class="btn">📆 Planilha Semanal</button>
         </form>
 
         <form action="{{ url_for('baixar_planilha_mensal') }}" method="GET">
-            <button type="submit" class="btn">Baixar Planilha Mensal</button>
+            <button type="submit" class="btn">🗓️ Planilha Mensal</button>
         </form>
     </div>
 </body>
