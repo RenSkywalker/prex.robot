@@ -121,27 +121,92 @@ def api_processos():
     })
 
 # --- NOVAS ROTAS: Página + Exportação de planilha ---
-@app.route('/fase-teste')
-def fase_teste():
+
+# Página para gerar as planilhas periódicas
+@app.route('/gerar-planilhas-periodicas')
+def gerar_planilhas_periodicas():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    _, df_futuros = carregar_processos()
-    processos = df_futuros.to_dict(orient='records')
-    return render_template('fase_teste.html', processos=processos)
+    return render_template('gerar_planilhas_periodicas.html')
 
-@app.route('/fase-teste/baixar')
-def baixar_planilha_fase_teste():
+# Rota para Baixar Planilha Diária
+@app.route('/baixar-planilha-diaria')
+def baixar_planilha_diaria():
+    if not session.get('usuario_logado'):
+        return redirect(url_for('login'))
+
+    # Carregar processos encontrados
     _, df_futuros = carregar_processos()
+
+    # Filtra os processos pela data de hoje
+    hoje = datetime.today().strftime('%Y-%m-%d')
+    df_diaria = df_futuros[df_futuros['data_encontrado'].str.startswith(hoje)]
+
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        df_futuros.to_excel(writer, index=False, sheet_name='FaseTeste')
+        df_diaria.to_excel(writer, index=False, sheet_name='Planilha Diária')
 
     output.seek(0)
     return send_file(
         output,
         as_attachment=True,
-        download_name="Processos_encontrados_para_fase_de_teste.xlsx",
+        download_name=f"Processos_Diarios_{hoje}.xlsx",
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
+
+# Rota para Baixar Planilha Semanal
+@app.route('/baixar-planilha-semanal')
+def baixar_planilha_semanal():
+    if not session.get('usuario_logado'):
+        return redirect(url_for('login'))
+
+    # Carregar processos encontrados
+    _, df_futuros = carregar_processos()
+
+    # Filtra os processos pela data da última semana
+    hoje = datetime.today()
+    semana_inicio = hoje - pd.Timedelta(days=7)
+    df_semanal = df_futuros[df_futuros['data_encontrado'] >= semana_inicio.strftime('%Y-%m-%d')]
+
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df_semanal.to_excel(writer, index=False, sheet_name='Planilha Semanal')
+
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=f"Processos_Semanais_{hoje.strftime('%Y-%m-%d')}.xlsx",
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+# Rota para Baixar Planilha Mensal
+@app.route('/baixar-planilha-mensal')
+def baixar_planilha_mensal():
+    if not session.get('usuario_logado'):
+        return redirect(url_for('login'))
+
+    # Carregar processos encontrados
+    _, df_futuros = carregar_processos()
+
+    # Filtra os processos pela data do mês atual
+    hoje = datetime.today()
+    inicio_mes = hoje.replace(day=1)
+    df_mensal = df_futuros[df_futuros['data_encontrado'] >= inicio_mes.strftime('%Y-%m-%d')]
+
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df_mensal.to_excel(writer, index=False, sheet_name='Planilha Mensal')
+
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=f"Processos_Mensais_{hoje.strftime('%Y-%m-%d')}.xlsx",
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
