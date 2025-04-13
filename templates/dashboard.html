@@ -7,75 +7,160 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f9f9f9;
+            margin: 0;
+            display: flex;
+            background-color: #2c003e; /* roxo escuro */
+            color: #fff;
         }
-        h1 {
-            color: #333;
+
+        header {
+            background-color: #000; /* topo preto */
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
         }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #1e0030;
+            padding: 100px 20px 20px 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: white;
+        }
+
+        .sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .sidebar p {
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin: 10px 0;
+        }
+
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            margin-left: 270px;
+            padding: 120px 40px 40px 40px;
+            flex: 1;
+        }
+
         h2 {
-            color: #555;
+            color: #fff;
             margin-top: 40px;
         }
-        p {
-            font-size: 1.1em;
-        }
+
         ul {
             list-style-type: none;
             padding: 0;
         }
+
         li {
             background: #fff;
+            color: #000;
             padding: 12px 18px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 8px;
         }
+
         a {
-            color: #0066cc;
-            text-decoration: none;
-            font-weight: bold;
+            color: #004F91;
         }
+
         a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h1>📄 Dashboard de Processos Encontrados</h1>
-    <p><strong>Usuário:</strong> {{ usuario }}</p>
 
-    <h2>✅ Processos encontrados</h2>
-    {% if processos_futuros %}
+    <header>
+        <h1>📄 Dashboard</h1>
+    </header>
+
+    <div class="sidebar">
+        <h2>👤 {{ usuario }}</h2>
         <ul>
-            {% for processo in processos_futuros %}
-                {% if processo.link and processo.data_encontrado %}
-                    <li>
-                        <strong>{{ processo.processo }}</strong><br>
-                        Encontrado em <em>{{ processo.data_encontrado.strftime('%d/%m/%Y %H:%M:%S') }}</em><br>
-                        <a href="{{ processo.link }}" target="_blank">Acessar processo</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
+            <li><a href="#fase-teste">Processos encontrados em fase de teste</a></li>
+            <li><a href="#gerar-planilhas">Gerar planilhas</a></li>
+            <li><a href="#grafico-controle">Gráfico de controle</a></li>
         </ul>
-    {% else %}
-        <p>Nenhum processo encontrado com link e data ainda.</p>
-    {% endif %}
+    </div>
 
-    <h2>🧪 Processos encontrados em fase de teste</h2>
-    <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP.</p>
+    <main>
+        <h2>👤 {{ usuario }}</h2>
 
-    {% if processos_futuros %}
-        <ul>
-            {% for processo in processos_futuros %}
-                {% if not processo.link or not processo.data_encontrado %}
-                    <li><strong>{{ processo.processo }}</strong></li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Nenhum processo encontrado na fase de teste.</p>
-    {% endif %}
+        <h2>✅ Processos encontrados</h2>
+        {% if processos_futuros %}
+            <ul>
+                {% for processo in processos_futuros %}
+                    {% if processo.link and processo.data_encontrado %}
+                        <li>
+                            <strong>{{ processo.processo }}</strong><br>
+                            Encontrado em <em>{{ processo.data_encontrado.strftime('%d/%m/%Y %H:%M:%S') }}</em><br>
+                            <a href="{{ processo.link }}" target="_blank">Acessar processo</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhum processo encontrado com link e data ainda.</p>
+        {% endif %}
+
+        <h2 id="fase-teste">🧪 Processos encontrados em fase de teste</h2>
+        <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP.</p>
+
+        {% if processos_futuros %}
+            <ul>
+                {% for processo in processos_futuros %}
+                    {% if not processo.link or not processo.data_encontrado %}
+                        <li><strong>{{ processo.processo }}</strong></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nenhum processo encontrado na fase de teste.</p>
+        {% endif %}
+
+        <h2 id="gerar-planilhas">📁 Gerar planilhas</h2>
+        <p>(Conteúdo dessa seção em breve...)</p>
+
+        <h2 id="grafico-controle">📊 Gráfico de controle</h2>
+        <p>(Gráficos e indicadores serão exibidos aqui.)</p>
+    </main>
 </body>
 </html>
 
