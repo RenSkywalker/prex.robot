@@ -141,6 +141,10 @@ def baixar_planilha_diaria():
 
     # Filtra os processos pela data de hoje
     hoje = datetime.today().strftime('%Y-%m-%d')
+
+    # Garante que a coluna 'data_encontrado' seja string antes de aplicar .str
+    df_futuros['data_encontrado'] = df_futuros['data_encontrado'].astype(str)
+
     df_diaria = df_futuros[df_futuros['data_encontrado'].str.startswith(hoje)]
 
     output = io.BytesIO()
