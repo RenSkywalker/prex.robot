@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, session, url_for, jsonify
+from flask import Flask, render_template, request, redirect, session, url_for, jsonify, send_file
 from flask_cors import CORS
 import psycopg2
 import pandas as pd
 from datetime import datetime
+import io
 
 app = Flask(__name__)
 CORS(app)
@@ -118,4 +119,29 @@ def api_processos():
         "fase_teste": processos_teste,
         "futuros": processos_futuros
     })
+
+# --- NOVAS ROTAS: Página + Exportação de planilha ---
+@app.route('/fase-teste')
+def fase_teste():
+    if not session.get('usuario_logado'):
+        return redirect(url_for('login'))
+
+    df_teste, _ = carregar_processos()
+    processos = df_teste.to_dict(orient='records')
+    return render_template('fase_teste.html', processos=processos)
+
+@app.route('/fase-teste/baixar')
+def baixar_planilha_fase_teste():
+    df_teste, _ = carregar_processos()
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df_teste.to_excel(writer, index=False, sheet_name='FaseTeste')
+
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="Processos_encontrados_para_fase_de_teste.xlsx",
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
 
