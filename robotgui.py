@@ -126,7 +126,7 @@ def fase_teste():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    df_futuros = carregar_processos()
+    _, df_futuros = carregar_processos()
     processos = df_futuros.to_dict(orient='records')
     return render_template('fase_teste.html', processos=processos)
 
