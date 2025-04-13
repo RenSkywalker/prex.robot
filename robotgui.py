@@ -268,7 +268,7 @@ def graficos():
         'graficos.html',
         dados_diario=agrupar_contagem(datas),
         dados_semanal=agrupar_contagem(datas_semana),
-        dados_mensal=agrupar_contagem(datas_mes)
+        dados_mensal=agrupar_contagem(datas_mes),
         usuario=session['usuario_logado']
     )
     
