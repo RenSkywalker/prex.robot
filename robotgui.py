@@ -129,7 +129,7 @@ def fase_teste():
 
     _, df_futuros = carregar_processos()
     processos = df_futuros.to_dict(orient='records')
-    return render_template('fase_teste.html', processos=processos)
+    return render_template('fase_teste.html', usuario=session['usuario_logado'], processos=processos)
 
 @app.route('/fase-teste/baixar')
 def baixar_planilha_fase_teste():
@@ -152,7 +152,7 @@ def gerar_planilhas_periodicas():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    return render_template('gerar_planilhas_periodicas.html')
+    return render_template('gerar_planilhas_periodicas.html', usuario=session['usuario_logado'])
 
 # Rota para Baixar Planilha Diária
 @app.route('/baixar-planilha-diaria')
@@ -160,21 +160,16 @@ def baixar_planilha_diaria():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    # Simula o mesmo carregamento usado no dashboard principal
     df_teste, df_futuros = carregar_processos()
 
-    # Aplica o mesmo filtro visual: somente com link e data_encontrado
     df_filtros = df_futuros[df_futuros['link'].notnull() & df_futuros['data_encontrado'].notnull()]
 
-    # Filtra pela data de hoje
     hoje = datetime.today().strftime('%Y-%m-%d')
     df_diaria = df_filtros[df_filtros['data_encontrado'].astype(str).str.startswith(hoje)]
 
-    # Se nada foi encontrado, retorna uma planilha vazia com cabeçalho
     if df_diaria.empty:
         df_diaria = pd.DataFrame(columns=['processo', 'data_encontrado', 'link'])
 
-    # Geração do arquivo Excel
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         df_diaria.to_excel(writer, index=False, sheet_name='Planilha Diária')
@@ -198,7 +193,7 @@ def baixar_planilha_semanal():
     hoje = datetime.today()
     sete_dias_atras = hoje - timedelta(days=7)
 
-    df_semanal = df_filtros[
+    df_semanal = df_filtros[ 
         (df_filtros['data_encontrado'] >= sete_dias_atras) & 
         (df_filtros['data_encontrado'] <= hoje)
     ]
@@ -248,6 +243,7 @@ def baixar_planilha_mensal():
         download_name=f"Processos_Mensais_{hoje.strftime('%Y-%m-%d')}.xlsx",
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
+    
 @app.route('/graficos')
 def graficos():
     # Verifica se o usuário está logado
@@ -273,6 +269,7 @@ def graficos():
         dados_diario=agrupar_contagem(datas),
         dados_semanal=agrupar_contagem(datas_semana),
         dados_mensal=agrupar_contagem(datas_mes)
+        usuario=session['usuario_logado']
     )
     
 @app.route('/logout')
