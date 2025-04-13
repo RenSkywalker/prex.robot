@@ -121,6 +121,29 @@ def api_processos():
     })
 
 # --- NOVAS ROTAS: Página + Exportação de planilha ---
+@app.route('/fase-teste')
+def fase_teste():
+    if not session.get('usuario_logado'):
+        return redirect(url_for('login'))
+
+    _, df_futuros = carregar_processos()
+    processos = df_futuros.to_dict(orient='records')
+    return render_template('fase_teste.html', processos=processos)
+
+@app.route('/fase-teste/baixar')
+def baixar_planilha_fase_teste():
+    _, df_futuros = carregar_processos()
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df_futuros.to_excel(writer, index=False, sheet_name='FaseTeste')
+
+    output.seek(0)
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="Processos_encontrados_para_fase_de_teste.xlsx",
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
 
 # Página para gerar as planilhas periódicas
 @app.route('/gerar-planilhas-periodicas')
