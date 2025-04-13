@@ -188,15 +188,14 @@
             <p>Nenhum processo encontrado com link e data ainda.</p>
         {% endif %}
 
+        <!-- Fase de Teste -->
         <h2 id="fase-teste">🧪 Processos encontrados em fase de teste</h2>
         <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data de quando foram encontrados e link do TJSP.</p>
 
-        {% if processos_futuros %}
+        {% if processos_teste %}
             <ul>
-                {% for processo in processos_futuros %}
-                    {% if not processo.link or not processo.data_encontrado %}
-                        <li><strong>{{ processo.processo }}</strong></li>
-                    {% endif %}
+                {% for processo in processos_teste %}
+                    <li><strong>{{ processo.processo }}</strong></li>
                 {% endfor %}
             </ul>
         {% else %}
@@ -230,6 +229,7 @@
 
 </body>
 </html>
+
 
 
 
