@@ -61,8 +61,10 @@
       width: 240px;
       height: auto;
       margin-bottom: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border-radius: 12px; /* Mantém bordas arredondadas */
+      box-shadow: none; /* Remove a sombra */
+      border: none; /* Remove qualquer borda */
+      outline: none; /* Remove o contorno */
     }
 
     @keyframes slideUp {
@@ -81,7 +83,7 @@
   <main>
     <!-- Imagem do robô Freepik -->
     <img
-      src="https://i.imgur.com/PBuwrbc.png"
+      src="https://i.imgur.com/PBuwrbc.png"  <!-- Link direto da imagem sem fundo -->
       alt="Robô Tech"
       class="robot-img"
     />
@@ -96,6 +98,7 @@
   </main>
 </body>
 </html>
+
 
 
 
