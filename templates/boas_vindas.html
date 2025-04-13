@@ -11,26 +11,11 @@
             color: #1c1c1c;
             font-family: 'Roboto', sans-serif;
             text-align: center;
-            padding: 0;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-        }
-
-        header {
-            width: 100%;
-            padding: 20px 0;
-            background: transparent;
-            display: flex;
-            justify-content: center;
-            animation: slideUp 1s ease-out forwards;
-            opacity: 0;
-        }
-
-        header img {
-            height: 60px;
         }
 
         main {
@@ -40,7 +25,7 @@
             justify-content: center;
             align-items: center;
             padding: 40px 20px;
-            animation: slideUp 1.4s ease-out forwards;
+            animation: slideUp 1s ease-out forwards;
             opacity: 0;
         }
 
@@ -73,11 +58,11 @@
         }
 
         .robot-img {
-            width: 160px;
+            width: 180px;
             height: auto;
             margin-bottom: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         @keyframes slideUp {
@@ -93,18 +78,13 @@
     </style>
 </head>
 <body>
-    <header>
-        <!-- Novo logo da Prex -->
-        <img src="https://prexprecatorios.com.br/img/LogoPrex.png" alt="Logo Prex">
-    </header>
-
     <main>
-        <!-- Robô tech -->
-        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Robô Prex" class="robot-img" />
+        <!-- Imagem de robô mais tech e realista -->
+        <img src="https://cdn.pixabay.com/photo/2023/03/27/19/03/robot-7882673_1280.png" alt="Robô Prex" class="robot-img" />
         
-        <h1>Olá, tudo bem? Me chamo Sahur, o robô mineirador da Prex!</h1>
+        <h1>🤖 Olá, tudo bem? Me chamo Sahur, o robô mineirador da Prex!</h1>
         
-        <p><strong>Bem-vindo(a) ao Robô de Precatórios 1.0. Fui criado para auxiliar a Prex encontrar números de precatórios disponíveis. Espero ser útil!</strong></p>
+        <p><strong>Bem-vindo(a) ao Robô de Precatórios 0500 1.0. Fui criado para auxiliar a Prex encontrar números de precatórios disponíveis. Espero ser útil!</strong></p>
         
         <form action="{{ url_for('login') }}" method="get">
             <button type="submit" class="btn">Ir para o login</button>
@@ -112,4 +92,5 @@
     </main>
 </body>
 </html>
+
 
