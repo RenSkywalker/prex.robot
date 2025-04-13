@@ -1,0 +1,10 @@
+<!-- gerar_planilhas.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Gerar Planilhas</h2>
+<!-- Aqui você pode colocar um botão ou formulário para gerar as planilhas -->
+<form action="{{ url_for('baixar_planilha_fase_teste') }}" method="GET">
+    <button type="submit">Baixar Planilha de Fase de Teste</button>
+</form>
+{% endblock %}
