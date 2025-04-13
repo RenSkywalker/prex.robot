@@ -1,21 +1,58 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerar Planilhas Periódicas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📁Gerar Planilhas Periódicas</h2>
+        <p>Aqui você pode baixar as planilhas encontradas periodicamente.</p>
 
-{% block content %}
-<h2>📁Gerar Planilhas Periódicas</h2>
-<p>Aqui você pode baixar as planilhas encontradas periodicamente.</p>
+        <!-- Formulários para baixar as planilhas -->
+        <form action="{{ url_for('baixar_planilha_diaria') }}" method="GET">
+            <button type="submit" class="btn">Baixar Planilha Diária</button>
+        </form>
 
-<!-- Formulários para baixar as planilhas -->
-<form action="{{ url_for('baixar_planilha_diaria') }}" method="GET">
-    <button type="submit" class="btn btn-primary">Baixar Planilha Diária</button>
-</form>
+        <form action="{{ url_for('baixar_planilha_semanal') }}" method="GET">
+            <button type="submit" class="btn">Baixar Planilha Semanal</button>
+        </form>
 
-<form action="{{ url_for('baixar_planilha_semanal') }}" method="GET">
-    <button type="submit" class="btn btn-primary">Baixar Planilha Semanal</button>
-</form>
-
-<form action="{{ url_for('baixar_planilha_mensal') }}" method="GET">
-    <button type="submit" class="btn btn-primary">Baixar Planilha Mensal</button>
-</form>
-
-{% endblock %}
+        <form action="{{ url_for('baixar_planilha_mensal') }}" method="GET">
+            <button type="submit" class="btn">Baixar Planilha Mensal</button>
+        </form>
+    </div>
+</body>
+</html>
 
