@@ -136,17 +136,21 @@ def baixar_planilha_diaria():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    # Carregar processos encontrados
-    _, df_futuros = carregar_processos()
+    # Simula o mesmo carregamento usado no dashboard principal
+    df_teste, df_futuros = carregar_processos()
 
-    # Filtra os processos pela data de hoje
+    # Aplica o mesmo filtro visual: somente com link e data_encontrado
+    df_filtros = df_futuros[df_futuros['link'].notnull() & df_futuros['data_encontrado'].notnull()]
+
+    # Filtra pela data de hoje
     hoje = datetime.today().strftime('%Y-%m-%d')
+    df_diaria = df_filtros[df_filtros['data_encontrado'].astype(str).str.startswith(hoje)]
 
-    # Garante que a coluna 'data_encontrado' seja string antes de aplicar .str
-    df_futuros['data_encontrado'] = df_futuros['data_encontrado'].astype(str)
+    # Se nada foi encontrado, retorna uma planilha vazia com cabeçalho
+    if df_diaria.empty:
+        df_diaria = pd.DataFrame(columns=['processo', 'data_encontrado', 'link'])
 
-    df_diaria = df_futuros[df_futuros['data_encontrado'].str.startswith(hoje)]
-
+    # Geração do arquivo Excel
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         df_diaria.to_excel(writer, index=False, sheet_name='Planilha Diária')
@@ -158,20 +162,25 @@ def baixar_planilha_diaria():
         download_name=f"Processos_Diarios_{hoje}.xlsx",
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-
-# Rota para Baixar Planilha Semanal
+    
 @app.route('/baixar-planilha-semanal')
 def baixar_planilha_semanal():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    # Carregar processos encontrados
     _, df_futuros = carregar_processos()
+    df_filtros = df_futuros[df_futuros['link'].notnull() & df_futuros['data_encontrado'].notnull()]
 
-    # Filtra os processos pela data da última semana
     hoje = datetime.today()
-    semana_inicio = hoje - pd.Timedelta(days=7)
-    df_semanal = df_futuros[df_futuros['data_encontrado'] >= semana_inicio.strftime('%Y-%m-%d')]
+    sete_dias_atras = hoje - timedelta(days=7)
+
+    df_semanal = df_filtros[
+        (df_filtros['data_encontrado'] >= sete_dias_atras) & 
+        (df_filtros['data_encontrado'] <= hoje)
+    ]
+
+    if df_semanal.empty:
+        df_semanal = pd.DataFrame(columns=['processo', 'data_encontrado', 'link'])
 
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
@@ -185,19 +194,24 @@ def baixar_planilha_semanal():
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
-# Rota para Baixar Planilha Mensal
 @app.route('/baixar-planilha-mensal')
 def baixar_planilha_mensal():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    # Carregar processos encontrados
     _, df_futuros = carregar_processos()
+    df_filtros = df_futuros[df_futuros['link'].notnull() & df_futuros['data_encontrado'].notnull()]
 
-    # Filtra os processos pela data do mês atual
     hoje = datetime.today()
-    inicio_mes = hoje.replace(day=1)
-    df_mensal = df_futuros[df_futuros['data_encontrado'] >= inicio_mes.strftime('%Y-%m-%d')]
+    trinta_dias_atras = hoje - timedelta(days=30)
+
+    df_mensal = df_filtros[
+        (df_filtros['data_encontrado'] >= trinta_dias_atras) & 
+        (df_filtros['data_encontrado'] <= hoje)
+    ]
+
+    if df_mensal.empty:
+        df_mensal = pd.DataFrame(columns=['processo', 'data_encontrado', 'link'])
 
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
