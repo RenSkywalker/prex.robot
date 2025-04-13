@@ -48,7 +48,7 @@
 
         .sidebar {
             width: 260px;
-            background-color: #1e0030;
+            background-color: #000;
             height: 100%;
             position: fixed;
             top: 0;
@@ -160,7 +160,7 @@
     <div class="sidebar" id="sidebar">
         <h2>👤 {{ usuario }}</h2>
         <ul>
-            <li><a href="#fase-teste">🧪 Processos em fase de teste</a></li>
+            <li><a href="#fase-teste">🧪 Processos encontrados em fase de teste</a></li>
             <li><a href="#gerar-planilhas">📁 Gerar planilhas</a></li>
             <li><a href="#grafico-controle">📊 Gráfico de controle</a></li>
         </ul>
@@ -187,7 +187,7 @@
         {% endif %}
 
         <h2 id="fase-teste">🧪 Processos encontrados em fase de teste</h2>
-        <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data e link do TJSP.</p>
+        <p>Os processos abaixo foram encontrados na fase de teste. Os próximos virão com data de quando foram encontrados e link do TJSP.</p>
 
         {% if processos_futuros %}
             <ul>
