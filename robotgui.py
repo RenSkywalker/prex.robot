@@ -260,7 +260,7 @@ def graficos():
         return redirect(url_for('login'))
 
     # Conecta ao banco de dados
-    conn = conectar()
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     # Consulta somente os processos com número, link e data_encontrado preenchidos
