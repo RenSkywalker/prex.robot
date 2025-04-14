@@ -127,22 +127,31 @@ def fase_teste():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    _, df_futuros = carregar_processos()
-    processos = df_futuros.to_dict(orient='records')
+    df_teste, _ = carregar_processos()  # Pegando apenas os processos de teste
+    processos = df_teste.to_dict(orient='records')  # Convertendo os processos para formato adequado
+
     return render_template('fase_teste.html', usuario=session['usuario_logado'], processos=processos)
 
 @app.route('/fase-teste/baixar')
 def baixar_planilha_fase_teste():
-    _, df_futuros = carregar_processos()
+    if not session.get('usuario_logado'):
+        return redirect(url_for('login'))
+
+    # Alterando a consulta para garantir que pegamos apenas os processos sem link para o download
+    df_teste, _ = carregar_processos()  # Pegando apenas os processos de teste (sem link)
+    df_teste_sem_link = df_teste[df_teste['link'].isnull()]  # Filtrando processos sem link
+
     output = io.BytesIO()
+
+    # Gerando a planilha apenas com os processos sem link da fase de teste
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        df_futuros.to_excel(writer, index=False, sheet_name='FaseTeste')
+        df_teste_sem_link.to_excel(writer, index=False, sheet_name='FaseTeste')
 
     output.seek(0)
     return send_file(
         output,
         as_attachment=True,
-        download_name="Processos_encontrados_para_fase_de_teste.xlsx",
+        download_name="Processos_em_Fase_de_Teste_Sem_Link.xlsx",
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
