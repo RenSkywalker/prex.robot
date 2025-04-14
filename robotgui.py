@@ -259,20 +259,29 @@ def graficos():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    # Obtém a lista de processos da sessão
-    processos = session.get('processos_futuros', [])  # ou pegue da fonte correta se já tiver
+    # Conecta ao banco de dados
+    conn = conectar()
+    cursor = conn.cursor()
 
-    # Processa as datas
-    datas = [p['data_encontrado'].strftime('%Y-%m-%d') for p in processos if p['data_encontrado']]
-    datas_semana = [p['data_encontrado'].strftime('%Y-%W') for p in processos if p['data_encontrado']]
-    datas_mes = [p['data_encontrado'].strftime('%Y-%m') for p in processos if p['data_encontrado']]
+    # Consulta somente os processos com número, link e data_encontrado preenchidos
+    cursor.execute("""
+        SELECT numero, link, data_encontrado FROM processos_encontrados 
+        WHERE numero IS NOT NULL AND link IS NOT NULL AND data_encontrado IS NOT NULL
+    """)
+    resultados = cursor.fetchall()
+    conn.close()
+
+    # Processa os resultados para datas
+    datas = [r[2].strftime('%Y-%m-%d') for r in resultados if r[2]]
+    datas_semana = [r[2].strftime('%Y-%W') for r in resultados if r[2]]
+    datas_mes = [r[2].strftime('%Y-%m') for r in resultados if r[2]]
 
     # Função para agrupar e contar as ocorrências
     def agrupar_contagem(datas):
         contagem = Counter(datas)
         return [{'data': k, 'quantidade': v} for k, v in sorted(contagem.items())]
 
-    # Retorna a renderização do template com os dados agregados
+    # Retorna o template com os gráficos de dados agregados
     return render_template(
         'graficos.html',
         dados_diario=agrupar_contagem(datas),
@@ -280,7 +289,7 @@ def graficos():
         dados_mensal=agrupar_contagem(datas_mes),
         usuario=session['usuario_logado']
     )
-    
+
 @app.route('/logout')
 def logout():
     session.clear()  # Remove todos os dados da sessão
