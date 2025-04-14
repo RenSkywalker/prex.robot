@@ -121,13 +121,13 @@ def fase_teste():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    df_futuros = carregar_processos()
+    _, df_futuros = carregar_processos()
     processos = df_futuros.to_dict(orient='records')
     return render_template('fase_teste.html', usuario=session['usuario_logado'], processos=processos)
 
 @app.route('/fase-teste/baixar')
 def baixar_planilha_fase_teste():
-    df_futuros = carregar_processos()
+    _, df_futuros = carregar_processos()
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         df_futuros.to_excel(writer, index=False, sheet_name='FaseTeste')
