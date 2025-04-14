@@ -127,8 +127,8 @@ def fase_teste():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    df_teste, _ = carregar_processos()  # Pegando apenas os processos de teste
-    processos = df_teste.to_dict(orient='records')  # Convertendo os processos para formato adequado
+    _, df_futuros = carregar_processos()  # Pegando apenas os processos de teste
+    processos = df_futuros.to_dict(orient='records')  # Convertendo os processos para formato adequado
 
     return render_template('fase_teste.html', usuario=session['usuario_logado'], processos=processos)
 
@@ -138,8 +138,8 @@ def baixar_planilha_fase_teste():
         return redirect(url_for('login'))
 
     # Alterando a consulta para garantir que pegamos apenas os processos sem link para o download
-    df_teste, _ = carregar_processos()  # Pegando apenas os processos de teste (sem link)
-    df_teste_sem_link = df_teste[df_teste['link'].isnull()]  # Filtrando processos sem link
+    _, df_futuros = carregar_processos()  # Pegando apenas os processos de teste (sem link)
+    df_teste_sem_link = df_futuros[df_futuros['link'].isnull()]  # Filtrando processos sem link
 
     output = io.BytesIO()
 
