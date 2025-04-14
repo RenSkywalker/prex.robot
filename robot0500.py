@@ -19,7 +19,13 @@ print(f"🚀 Iniciando script robot0500.py em {datetime.now().strftime('%Y-%m-%d
 
 # === Função para conexão com o banco ===
 def conectar_banco():
-    return psycopg2.connect("postgresql://postgres:hoqTncYzOHdQShgdVDdEPqJIOJluwpKZ@yamabiko.proxy.rlwy.net:56223/railway")
+    try:
+        conn = psycopg2.connect("postgresql://postgres:hoqTncYzOHdQShgdVDdEPqJIOJluwpKZ@yamabiko.proxy.rlwy.net:56223/railway")
+        logging.info("✅ Conexão com o banco de dados estabelecida com sucesso.")
+        return conn
+    except Exception as e:
+        logging.error(f"❌ Erro ao conectar ao banco de dados: {e}")
+        raise
 
 def processo_ja_registrado(processo):
     conn = conectar_banco()
