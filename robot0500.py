@@ -43,12 +43,14 @@ def registrar_processo(processo, encontrado, url=None):
             VALUES (%s, %s, %s)
             ON CONFLICT (processo) DO NOTHING
         """, (processo, url, datetime.now()))
+        logging.info(f"📥 Processo registrado em 'processos_encontrados': {processo}")
     else:
         cursor.execute("""
             INSERT INTO processos_nao_encontrados (processo) 
             VALUES (%s)
             ON CONFLICT DO NOTHING
         """, (processo,))
+        logging.info(f"📥 Processo registrado em 'processos_nao_encontrados': {processo}")
     conn.commit()
     cursor.close()
     conn.close()
@@ -148,6 +150,3 @@ while True:
         logging.info(msg)
 
     time.sleep(180)  # Aguarda 3 minutos antes da próxima verificação
-
-
-
