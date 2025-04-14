@@ -27,16 +27,14 @@ def autenticar_usuario(email, senha):
 # --- Carregar processos encontrados ---
 def carregar_processos():
     conn = get_db_connection("robo_admin", "cursirenan79")
-    df_teste = pd.read_sql(
-        "SELECT processo FROM processos_encontrados WHERE data_encontrado IS NULL AND link IS NULL ORDER BY processo",
-        conn
-    )
+    
+    # Filtra apenas os processos que possuem link e data_encontrado preenchidos
     df_futuros = pd.read_sql(
-        "SELECT processo, link, data_encontrado FROM processos_encontrados WHERE data_encontrado IS NOT NULL ORDER BY data_encontrado DESC",
+        "SELECT processo, link, data_encontrado FROM processos_encontrados WHERE link IS NOT NULL AND data_encontrado IS NOT NULL ORDER BY data_encontrado DESC",
         conn
     )
     conn.close()
-    return df_teste, df_futuros
+    return df_futuros
 
 # --- Rotas de frontend (HTML) ---
 @app.route('/')
@@ -82,15 +80,13 @@ def dashboard():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    df_teste, df_futuros = carregar_processos()
+    df_futuros = carregar_processos()
 
-    processos_teste = df_teste.to_dict(orient='records')
     processos_futuros = df_futuros.to_dict(orient='records')
 
     return render_template(
         'dashboard.html',
         usuario=session['usuario_logado'],
-        processos_teste=processos_teste,
         processos_futuros=processos_futuros
     )
 
@@ -113,11 +109,9 @@ def api_login():
 
 @app.route('/api/processos', methods=['GET'])
 def api_processos():
-    df_teste, df_futuros = carregar_processos()
-    processos_teste = df_teste.to_dict(orient='records')
+    df_futuros = carregar_processos()
     processos_futuros = df_futuros.to_dict(orient='records')
     return jsonify({
-        "fase_teste": processos_teste,
         "futuros": processos_futuros
     })
 
@@ -127,13 +121,13 @@ def fase_teste():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    _, df_futuros = carregar_processos()
+    df_futuros = carregar_processos()
     processos = df_futuros.to_dict(orient='records')
     return render_template('fase_teste.html', usuario=session['usuario_logado'], processos=processos)
 
 @app.route('/fase-teste/baixar')
 def baixar_planilha_fase_teste():
-    _, df_futuros = carregar_processos()
+    df_futuros = carregar_processos()
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         df_futuros.to_excel(writer, index=False, sheet_name='FaseTeste')
@@ -160,12 +154,10 @@ def baixar_planilha_diaria():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    df_teste, df_futuros = carregar_processos()
-
-    df_filtros = df_futuros[df_futuros['link'].notnull() & df_futuros['data_encontrado'].notnull()]
+    df_futuros = carregar_processos()
 
     hoje = datetime.today().strftime('%Y-%m-%d')
-    df_diaria = df_filtros[df_filtros['data_encontrado'].astype(str).str.startswith(hoje)]
+    df_diaria = df_futuros[df_futuros['data_encontrado'].astype(str).str.startswith(hoje)]
 
     if df_diaria.empty:
         df_diaria = pd.DataFrame(columns=['processo', 'data_encontrado', 'link'])
@@ -187,15 +179,13 @@ def baixar_planilha_semanal():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    _, df_futuros = carregar_processos()
-    df_filtros = df_futuros[df_futuros['link'].notnull() & df_futuros['data_encontrado'].notnull()]
-
+    df_futuros = carregar_processos()
     hoje = datetime.today()
     sete_dias_atras = hoje - timedelta(days=7)
 
-    df_semanal = df_filtros[ 
-        (df_filtros['data_encontrado'] >= sete_dias_atras) & 
-        (df_filtros['data_encontrado'] <= hoje)
+    df_semanal = df_futuros[ 
+        (df_futuros['data_encontrado'] >= sete_dias_atras) & 
+        (df_futuros['data_encontrado'] <= hoje)
     ]
 
     if df_semanal.empty:
@@ -218,15 +208,13 @@ def baixar_planilha_mensal():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    _, df_futuros = carregar_processos()
-    df_filtros = df_futuros[df_futuros['link'].notnull() & df_futuros['data_encontrado'].notnull()]
-
+    df_futuros = carregar_processos()
     hoje = datetime.today()
     trinta_dias_atras = hoje - timedelta(days=30)
 
-    df_mensal = df_filtros[
-        (df_filtros['data_encontrado'] >= trinta_dias_atras) & 
-        (df_filtros['data_encontrado'] <= hoje)
+    df_mensal = df_futuros[
+        (df_futuros['data_encontrado'] >= trinta_dias_atras) & 
+        (df_futuros['data_encontrado'] <= hoje)
     ]
 
     if df_mensal.empty:
@@ -251,12 +239,12 @@ def graficos():
         return redirect(url_for('login'))
 
     # Obtém a lista de processos da sessão
-    processos = session.get('processos_futuros', [])  # ou pegue da fonte correta se já tiver
+    df_futuros = carregar_processos()
 
     # Processa as datas
-    datas = [p['data_encontrado'].strftime('%Y-%m-%d') for p in processos if p['data_encontrado']]
-    datas_semana = [p['data_encontrado'].strftime('%Y-%W') for p in processos if p['data_encontrado']]
-    datas_mes = [p['data_encontrado'].strftime('%Y-%m') for p in processos if p['data_encontrado']]
+    datas = [p['data_encontrado'].strftime('%Y-%m-%d') for p in df_futuros.to_dict(orient='records') if p['data_encontrado']]
+    datas_semana = [p['data_encontrado'].strftime('%Y-%W') for p in df_futuros.to_dict(orient='records') if p['data_encontrado']]
+    datas_mes = [p['data_encontrado'].strftime('%Y-%m') for p in df_futuros.to_dict(orient='records') if p['data_encontrado']]
 
     # Função para agrupar e contar as ocorrências
     def agrupar_contagem(datas):
