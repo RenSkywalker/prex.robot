@@ -265,8 +265,8 @@ def graficos():
 
     # Consulta somente os processos com número, link e data_encontrado preenchidos
     cursor.execute("""
-        SELECT numero, link, data_encontrado FROM processos_encontrados 
-        WHERE numero IS NOT NULL AND link IS NOT NULL AND data_encontrado IS NOT NULL
+        SELECT processo, link, data_encontrado FROM processos_encontrados 
+        WHERE processo IS NOT NULL AND link IS NOT NULL AND data_encontrado IS NOT NULL
     """)
     resultados = cursor.fetchall()
     conn.close()
