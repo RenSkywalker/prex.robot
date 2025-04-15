@@ -5,6 +5,7 @@ import psycopg2
 import pandas as pd
 from datetime import datetime, timedelta
 import io
+import calendar
 
 app = Flask(__name__)
 CORS(app)
@@ -253,25 +254,21 @@ def baixar_planilha_mensal():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    # Captura as datas de início e fim do formulário
-    data_inicio = request.form.get('data_inicio')
-    data_fim = request.form.get('data_fim')
+    mes_mensal = request.form.get('mes_mensal')
+    if not mes_mensal:
+        return "Mês não fornecido", 400
 
-    if not data_inicio or not data_fim:
-        return "Datas de início ou fim não fornecidas", 400
-    
     try:
-        # Converte as datas para o formato correto (DD/MM/AAAA)
-        data_inicio = datetime.strptime(data_inicio, '%d/%m/%Y')
-        data_fim = datetime.strptime(data_fim, '%d/%m/%Y')
+        # Converte o mês (formato YYYY-MM) e define início e fim do mês
+        data_inicio = datetime.strptime(mes_mensal, '%Y-%m')
+        ultimo_dia = calendar.monthrange(data_inicio.year, data_inicio.month)[1]
+        data_fim = datetime(data_inicio.year, data_inicio.month, ultimo_dia)
     except ValueError:
-        return "Formato de data inválido. Use DD/MM/AAAA", 400
+        return "Formato de mês inválido. Use AAAA-MM", 400
 
     df_teste, df_futuros = carregar_processos()
-
     df_filtros = df_futuros[df_futuros['link'].notnull() & df_futuros['data_encontrado'].notnull()]
 
-    # Filtra os processos dentro do intervalo de datas fornecido
     df_mensal = df_filtros[
         (df_filtros['data_encontrado'] >= data_inicio) & 
         (df_filtros['data_encontrado'] <= data_fim)
@@ -288,10 +285,10 @@ def baixar_planilha_mensal():
     return send_file(
         output,
         as_attachment=True,
-        download_name=f"Processos_Mensais_{data_inicio.strftime('%d-%m-%Y')}_a_{data_fim.strftime('%d-%m-%Y')}.xlsx",
+        download_name=f"Processos_Mensais_{data_inicio.strftime('%m-%Y')}.xlsx",
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    
+
 @app.route('/graficos')
 def graficos():
     # Verifica se o usuário está logado
