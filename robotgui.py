@@ -84,12 +84,13 @@ def dashboard():
 
     df_teste, df_futuros = carregar_processos()
 
-    # Convertendo os processos encontrados para um formato que pode ser agrupado por data
-    df_futuros['data_encontrado'] = pd.to_datetime(df_futuros['data_encontrado'], errors='coerce')  # Convertendo a coluna para data
-    df_futuros = df_futuros.dropna(subset=['data_encontrado'])  # Removendo os processos sem data_encontrado
+    # Convertendo a coluna 'data_encontrado' para datetime e removendo valores NaT (não válidos)
+    df_futuros['data_encontrado'] = pd.to_datetime(df_futuros['data_encontrado'], errors='coerce')
 
-    # Agrupando os processos por data de encontro
-    processos_por_data = df_futuros.groupby(df_futuros['data_encontrado'].dt.strftime('%d/%m/%Y'))['processo'].apply(list).to_dict()
+    # Agrupando os processos por data de encontro (formatada como 'dd/mm/yyyy')
+    processos_por_data = df_futuros.dropna(subset=['data_encontrado']) \
+                                    .groupby(df_futuros['data_encontrado'].dt.strftime('%d/%m/%Y'))['processo'] \
+                                    .apply(list).to_dict()
 
     return render_template(
         'dashboard.html',
