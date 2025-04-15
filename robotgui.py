@@ -97,18 +97,18 @@ def dashboard():
     # Agrupar por data formatada (somente dia/mês/ano) e transformar em lista de dicionários
     df_futuros['data_agrupamento'] = df_futuros['data_encontrado'].dt.strftime('%d/%m/%Y')
 
+    # Agrupar e ordenar os processos por data
     processos_futuros = (
         df_futuros
         .groupby('data_agrupamento')
         .apply(lambda grupo: grupo[['processo', 'link', 'data_encontrado_formatada']].to_dict(orient='records'))
         .to_dict()
     )
-    
-    return render_template(
-        'dashboard.html',
-        usuario=session['usuario_logado'],
-        processos_futuros=processos_futuros
-    )
+
+    # Ordenar os processos por data_agrupamento em ordem decrescente
+    processos_futuros = dict(sorted(processos_futuros.items(), reverse=True))
+
+    return render_template('dashboard.html', processos_futuros=processos_futuros)
 
 @app.route('/ir_login', methods=['POST'])
 def ir_login():
