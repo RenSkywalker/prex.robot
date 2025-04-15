@@ -95,7 +95,7 @@ def dashboard():
     return render_template(
         'dashboard.html',
         usuario=session['usuario_logado'],
-        processos_por_data=processos_por_data
+        processos_futuros=processos_futuros
     )
     
 @app.route('/ir_login', methods=['POST'])
