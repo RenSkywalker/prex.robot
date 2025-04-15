@@ -30,7 +30,7 @@ def conectar_banco():
 def processo_ja_registrado(processo):
     conn = conectar_banco()
     cursor = conn.cursor()
-    cursor.execute(""" 
+    cursor.execute("""
         SELECT 1 FROM processos_encontrados WHERE processo = %s
         UNION
         SELECT 1 FROM processos_nao_encontrados WHERE processo = %s
@@ -44,14 +44,14 @@ def registrar_processo(processo, encontrado, url=None):
     conn = conectar_banco()
     cursor = conn.cursor()
     if encontrado:
-        cursor.execute(""" 
+        cursor.execute("""
             INSERT INTO processos_encontrados (processo, link, data_encontrado) 
             VALUES (%s, %s, %s)
             ON CONFLICT (processo) DO NOTHING
         """, (processo, url, datetime.now()))
         logging.info(f"📥 Processo registrado em 'processos_encontrados': {processo}")
     else:
-        cursor.execute(""" 
+        cursor.execute("""
             INSERT INTO processos_nao_encontrados (processo) 
             VALUES (%s)
             ON CONFLICT DO NOTHING
@@ -68,16 +68,6 @@ def gerar_numero_processo():
     numeros_aleatorios = f"{random.randint(0, 9999999):07d}"
     ano_fixo = random.choice([2024, 2025])
     return f"{prefixo_fixo}{numeros_aleatorios}.{ano_fixo}.8.26.0500"
-
-def gerar_processos_unicos(quantidade):
-    processos_unicos = set()
-    tentativas = 0
-    while len(processos_unicos) < quantidade and tentativas < quantidade * 10:
-        processo = gerar_numero_processo()
-        if processo not in processos_unicos and not processo_ja_registrado(processo):
-            processos_unicos.add(processo)
-        tentativas += 1
-    return list(processos_unicos)
 
 def dentro_do_horario():
     agora = datetime.now()
@@ -146,15 +136,10 @@ while True:
         print(inicio_msg)
         logging.info(inicio_msg)
 
-        # Gera processos únicos e verifica se já estão registrados
-        processos = gerar_processos_unicos(300)  # << ALTERAÇÃO AQUI
-
-        # Verifica os processos não registrados antes de começar a busca
-        processos_nao_registrados = [p for p in processos if not processo_ja_registrado(p)]
-
+        processos = [gerar_numero_processo() for _ in range(300)]
         try:
             driver = iniciar_driver()
-            buscar_precatorios_tjsp(driver, processos_nao_registrados)  # Somente processos não registrados
+            buscar_precatorios_tjsp(driver, processos)
             driver.quit()
         except Exception as erro:
             msg = f"❌ Erro geral durante execução: {erro}"
@@ -163,7 +148,6 @@ while True:
         finally:
             if 'driver' in locals():
                 driver.quit()
-
         print("⏳ Aguardando 3 minutos até a próxima execução...\n")
         logging.info("Aguardando 3 minutos para nova execução...\n")
     else:
