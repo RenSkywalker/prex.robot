@@ -299,7 +299,7 @@ def graficos():
     conn = get_db_connection("postgres", "hoqTncYzOHdQShgdVDdEPqJIOJluwpKZ")
     cursor = conn.cursor()
 
-    # Consulta somente os processos com número, link e data_encontrado preenchidos
+    # Consulta os processos válidos
     cursor.execute("""
         SELECT processo, link, data_encontrado FROM processos_encontrados 
         WHERE processo IS NOT NULL AND link IS NOT NULL AND data_encontrado IS NOT NULL
@@ -307,12 +307,11 @@ def graficos():
     resultados = cursor.fetchall()
     conn.close()
 
-    # Processa os resultados para datas
-    datas = [r[2].strftime('%Y-%m-%d') for r in resultados if r[2]]
-    datas_semana = [r[2].strftime('%Y-%W') for r in resultados if r[2]]
-    datas_mes = [r[2].strftime('%Y-%m') for r in resultados if r[2]]
+    # Filtra as datas
+    datas = [r[2].date().isoformat() for r in resultados if r[2]]
+    datas_semana = [r[2].date().strftime('%Y-%W') for r in resultados if r[2]]
+    datas_mes = [r[2].date().strftime('%Y-%m') for r in resultados if r[2]]
 
-    # Função para agrupar e contar as ocorrências
     def agrupar_contagem(datas):
         contagem = Counter(datas)
         return [{'data': k, 'quantidade': v} for k, v in sorted(contagem.items())]
@@ -325,7 +324,7 @@ def graficos():
         dados_mensal=agrupar_contagem(datas_mes),
         usuario=session['usuario_logado']
     )
-
+    
 @app.route('/logout')
 def logout():
     session.clear()  # Remove todos os dados da sessão
