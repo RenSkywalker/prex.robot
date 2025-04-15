@@ -151,6 +151,10 @@
     form {
       display: inline-block;
     }
+
+    .form-input {
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -176,15 +180,26 @@
     <h2>📁 Gerar Planilhas Periódicas</h2>
     <p>Aqui você pode baixar as planilhas encontradas periodicamente.</p>
 
+    <!-- Formulário para Planilha Diária -->
     <form action="{{ url_for('baixar_planilha_diaria') }}" method="GET">
+      <div class="form-input">
+        <label for="data_diaria">Escolha o dia para a planilha diária:</label>
+        <input type="date" id="data_diaria" name="data_diaria" required>
+      </div>
       <button type="submit" class="btn">📅 Planilha Diária</button>
     </form>
 
+    <!-- Botão para a Planilha Semanal (sem formulário) -->
     <form action="{{ url_for('baixar_planilha_semanal') }}" method="GET">
       <button type="submit" class="btn">📆 Planilha Semanal</button>
     </form>
 
+    <!-- Formulário para Planilha Mensal -->
     <form action="{{ url_for('baixar_planilha_mensal') }}" method="GET">
+      <div class="form-input">
+        <label for="mes_mensal">Escolha o mês para a planilha mensal:</label>
+        <input type="month" id="mes_mensal" name="mes_mensal" required>
+      </div>
       <button type="submit" class="btn">🗓️ Planilha Mensal</button>
     </form>
   </main>
