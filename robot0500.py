@@ -1,4 +1,4 @@
-import os
+import os 
 import random
 import time
 import logging
@@ -7,8 +7,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from datetime import datetime
-import psutil
-import subprocess
 
 # === CONFIGURAR LOGGING ===
 logging.basicConfig(
@@ -131,30 +129,9 @@ def buscar_precatorios_tjsp(driver, processos):
             logging.error(msg)
             registrar_processo(processo, False)
 
-# === Funções de Monitoramento ===
-def is_process_running(process_name):
-    """Verifica se o processo está em execução"""
-    for proc in psutil.process_iter(attrs=['pid', 'name', 'cmdline']):
-        if process_name in ' '.join(proc.info['cmdline']):
-            return True
-    return False
-
-def start_process():
-    """Inicia o processo"""
-    print("🔄 Iniciando o robô...")
-    subprocess.Popen(['/home/ubuntu/prex.robot/venv/bin/python3', '/home/ubuntu/prex.robot/robot0500.py'], stdout=open('/home/ubuntu/robot.log', 'a'), stderr=subprocess.STDOUT)
-
 # === LOOP PRINCIPAL ===
 while True:
     if dentro_do_horario():
-        # Monitoramento do processo
-        process_name = 'robot0500.py'
-        if not is_process_running(process_name):
-            print(f"❌ O processo {process_name} não está em execução. Reiniciando...")
-            start_process()
-        else:
-            print(f"✅ O processo {process_name} está em execução.")
-
         inicio_msg = f"🔄 Iniciando busca de processos às {datetime.now().strftime('%H:%M:%S')}..."
         print(inicio_msg)
         logging.info(inicio_msg)
