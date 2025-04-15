@@ -170,26 +170,34 @@
     </div>
 
     <main>
-        <div class="usuario-topo">👤 {{ usuario }}</div>
+    <div class="usuario-topo">👤 {{ usuario }}</div>
 
-        <h2 style="margin-top: 50px;">✅ Processos encontrados</h2>
-        <p>Aqui serão mostrados os processos encontrados pelo robô!</p>
-        {% if processos_futuros %}
-            <ul>
-                {% for processo in processos_futuros %}
-                    {% if processo.link and processo.data_encontrado %}
-                        <li>
-                            <strong>{{ processo.processo }}</strong><br>
-                            Encontrado em <em>{{ processo.data_encontrado.strftime('%d/%m/%Y %H:%M:%S') }}</em><br>
-                            <a href="{{ processo.link }}" target="_blank">Acessar processo</a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Nenhum processo encontrado com link e data ainda.</p>
-        {% endif %}
-    </main>
+    <h2 style="margin-top: 50px;">✅ Processos encontrados</h2>
+    <p>Aqui serão mostrados os processos encontrados pelo robô!</p>
+
+    {% if processos_futuros %}
+        <ul>
+            {% for data, processos in processos_futuros.items() %}
+                <li>
+                    <strong>{{ data }}</strong>
+                    <ul>
+                        {% for processo in processos %}
+                            {% if processo.link and processo.data_encontrado %}
+                                <li>
+                                    <strong>{{ processo.processo }}</strong><br>
+                                    Encontrado em <em>{{ processo.data_encontrado.strftime('%d/%m/%Y %H:%M:%S') }}</em><br>
+                                    <a href="{{ processo.link }}" target="_blank">Acessar processo</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum processo encontrado com link e data ainda.</p>
+    {% endif %}
+</main>
 
     <script>
         function toggleMenu() {
