@@ -74,7 +74,11 @@
             label: label,
             data: dados.map(item => item.quantidade),
             fill: false,
-            borderColor: 'rgba(255, 255, 255, 0.8)',
+            borderColor: 'rgba(255, 99, 132, 0.8)', // Cor da linha (vermelho)
+            pointBackgroundColor: 'rgba(54, 162, 235, 0.8)', // Cor das bolinhas (azul)
+            pointRadius: 6, // Tamanho das bolinhas
+            pointHoverRadius: 8, // Tamanho das bolinhas ao passar o mouse
+            borderWidth: 2, // Espessura da linha
             tension: 0.3
           }]
         },
@@ -83,6 +87,16 @@
             legend: {
               labels: {
                 color: 'white'
+              },
+              display: true,  // Garante que a legenda será exibida
+              position: 'top',  // Posiciona a legenda no topo
+            },
+            title: {
+              display: true,  // Garante que o título será exibido
+              text: 'Gráfico de Processos Encontrados', // Título do gráfico
+              color: 'white', // Cor do título
+              font: {
+                size: 20  // Tamanho da fonte do título
               }
             }
           },
