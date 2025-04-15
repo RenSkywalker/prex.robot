@@ -197,32 +197,32 @@
 
   <!-- Container para os botões de download e formulários -->
   <div class="container">
-    <!-- Botão e formulário de Planilha Diária -->
+    <!-- Planilha Diária -->
     <div class="form-container">
       <form action="{{ url_for('baixar_planilha_diaria') }}" method="POST">
+        <button type="submit" class="btn">📅 Planilha Diária</button>
         <div class="form-input">
           <label for="data_diaria">Escolha o dia para a planilha diária:</label><br>
           <input type="date" id="data_diaria" name="data_diaria" required>
         </div>
-        <button type="submit" class="btn">📅 Planilha Diária</button>
       </form>
     </div>
 
-    <!-- Botão de Planilha Semanal -->
+    <!-- Planilha Semanal -->
     <div class="form-container">
-      <form action="{{ url_for('baixar_planilha_semanal') }}" method="POST">
+      <form action="{{ url_for('baixar_planilha_semanal') }}" method="GET">
         <button type="submit" class="btn">📅 Planilha Semanal</button>
       </form>
     </div>
 
-    <!-- Botão e formulário de Planilha Mensal -->
+    <!-- Planilha Mensal -->
     <div class="form-container">
       <form action="{{ url_for('baixar_planilha_mensal') }}" method="POST">
+        <button type="submit" class="btn">🗓️ Planilha Mensal</button>
         <div class="form-input">
           <label for="mes_mensal">Escolha o mês para a planilha mensal:</label><br>
           <input type="month" id="mes_mensal" name="mes_mensal" required>
         </div>
-        <button type="submit" class="btn">🗓️ Planilha Mensal</button>
       </form>
     </div>
   </div>
