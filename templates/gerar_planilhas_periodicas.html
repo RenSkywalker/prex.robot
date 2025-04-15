@@ -150,24 +150,30 @@
 
     .botoes-container {
       display: flex;
-      flex-direction: column;  /* Muda de linha para coluna */
-      align-items: center;
-      gap: 30px; /* Distância entre os botões e os formulários */
+      justify-content: center; /* Centraliza os botões */
+      gap: 20px; /* Espaço entre os botões */
+      margin-bottom: 30px; /* Espaço abaixo dos botões */
     }
 
-    .botoes-container form {
+    .form-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 20px;
-    }
-
-    .botoes-container button {
-      margin-top: 10px; /* Para dar um espaço entre o input e o botão */
+      width: 100%;
     }
 
     .form-input {
       margin-bottom: 20px;
+    }
+
+    .botoes-container form {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+    }
+
+    .botoes-container form input, .botoes-container form button {
+      width: 100%;
     }
   </style>
 </head>
@@ -195,28 +201,40 @@
   <p>Aqui você pode baixar as planilhas dos processos encontrados periodicamente.</p>
 
   <div class="botoes-container">
-    <!-- Formulário para Planilha Diária -->
-    <form action="{{ url_for('baixar_planilha_diaria') }}" method="POST">
-      <button type="submit" class="btn">📅 Planilha Diária</button>
-      <div class="form-input">
-        <label for="data_diaria">Escolha o dia para a planilha diária:</label><br>
-        <input type="date" id="data_diaria" name="data_diaria" required>
-      </div>
-    </form>
+    <!-- Botão para a Planilha Diária -->
+    <div class="form-container">
+      <form action="{{ url_for('baixar_planilha_diaria') }}" method="POST">
+        <button type="submit" class="btn">📅 Planilha Diária</button>
+      </form>
+      <form action="{{ url_for('baixar_planilha_diaria') }}" method="POST">
+        <div class="form-input">
+          <label for="data_diaria">Escolha o dia para a planilha diária:</label><br>
+          <input type="date" id="data_diaria" name="data_diaria" required>
+        </div>
+        <button type="submit" class="btn">📅 Gerar Planilha Diária</button>
+      </form>
+    </div>
 
     <!-- Botão para a Planilha Semanal -->
-    <form action="{{ url_for('baixar_planilha_semanal') }}" method="GET">
-      <button type="submit" class="btn">📆 Planilha Semanal</button>
-    </form>
+    <div class="form-container">
+      <form action="{{ url_for('baixar_planilha_semanal') }}" method="GET">
+        <button type="submit" class="btn">📆 Planilha Semanal</button>
+      </form>
+    </div>
 
-    <!-- Formulário para Planilha Mensal -->
-    <form action="{{ url_for('baixar_planilha_mensal') }}" method="POST">
-      <button type="submit" class="btn">🗓️ Planilha Mensal</button>
-      <div class="form-input">
-        <label for="mes_mensal">Escolha o mês para a planilha mensal:</label><br>
-        <input type="month" id="mes_mensal" name="mes_mensal" required>
-      </div>
-    </form>
+    <!-- Botão para a Planilha Mensal -->
+    <div class="form-container">
+      <form action="{{ url_for('baixar_planilha_mensal') }}" method="POST">
+        <button type="submit" class="btn">🗓️ Planilha Mensal</button>
+      </form>
+      <form action="{{ url_for('baixar_planilha_mensal') }}" method="POST">
+        <div class="form-input">
+          <label for="mes_mensal">Escolha o mês para a planilha mensal:</label><br>
+          <input type="month" id="mes_mensal" name="mes_mensal" required>
+        </div>
+        <button type="submit" class="btn">🗓️ Gerar Planilha Mensal</button>
+      </form>
+    </div>
   </div>
 </main>
 
@@ -235,3 +253,4 @@
   </script>
 </body>
 </html>
+
