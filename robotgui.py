@@ -101,6 +101,7 @@ def dashboard():
         .groupby('data_agrupamento')
         .apply(lambda grupo: grupo[['processo', 'link', 'data_encontrado_formatada']].to_dict(orient='records'))
         .to_dict()
+    )
     
     return render_template(
         'dashboard.html',
