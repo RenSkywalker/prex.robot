@@ -88,7 +88,7 @@ def dashboard():
     df_futuros['data_encontrado'] = pd.to_datetime(df_futuros['data_encontrado'], errors='coerce')
 
     # Agrupando os processos por data de encontro (formatada como 'dd/mm/yyyy')
-    processos_por_data = df_futuros.dropna(subset=['data_encontrado']) \
+    processos_futuros = df_futuros.dropna(subset=['data_encontrado']) \
                                     .groupby(df_futuros['data_encontrado'].dt.strftime('%d/%m/%Y'))['processo'] \
                                     .apply(list).to_dict()
 
