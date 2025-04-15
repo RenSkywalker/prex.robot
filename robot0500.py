@@ -30,7 +30,7 @@ def conectar_banco():
 def processo_ja_registrado(processo):
     conn = conectar_banco()
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute(""" 
         SELECT 1 FROM processos_encontrados WHERE processo = %s
         UNION
         SELECT 1 FROM processos_nao_encontrados WHERE processo = %s
@@ -44,14 +44,14 @@ def registrar_processo(processo, encontrado, url=None):
     conn = conectar_banco()
     cursor = conn.cursor()
     if encontrado:
-        cursor.execute("""
+        cursor.execute(""" 
             INSERT INTO processos_encontrados (processo, link, data_encontrado) 
             VALUES (%s, %s, %s)
             ON CONFLICT (processo) DO NOTHING
         """, (processo, url, datetime.now()))
         logging.info(f"📥 Processo registrado em 'processos_encontrados': {processo}")
     else:
-        cursor.execute("""
+        cursor.execute(""" 
             INSERT INTO processos_nao_encontrados (processo) 
             VALUES (%s)
             ON CONFLICT DO NOTHING
@@ -146,10 +146,15 @@ while True:
         print(inicio_msg)
         logging.info(inicio_msg)
 
+        # Gera processos únicos e verifica se já estão registrados
         processos = gerar_processos_unicos(300)  # << ALTERAÇÃO AQUI
+
+        # Verifica os processos não registrados antes de começar a busca
+        processos_nao_registrados = [p for p in processos if not processo_ja_registrado(p)]
+
         try:
             driver = iniciar_driver()
-            buscar_precatorios_tjsp(driver, processos)
+            buscar_precatorios_tjsp(driver, processos_nao_registrados)  # Somente processos não registrados
             driver.quit()
         except Exception as erro:
             msg = f"❌ Erro geral durante execução: {erro}"
@@ -158,6 +163,7 @@ while True:
         finally:
             if 'driver' in locals():
                 driver.quit()
+
         print("⏳ Aguardando 3 minutos até a próxima execução...\n")
         logging.info("Aguardando 3 minutos para nova execução...\n")
     else:
