@@ -182,7 +182,7 @@
                     <strong>{{ data }}</strong>
                     <ul>
                         {% for processo in processos %}
-                            {% if processo['link'] and processo['data_encontrado'] %}
+                            {% if processo['link'] and processo['data_encontrado_formatada'] %}
                                 <li>
                                     <strong>{{ processo['processo'] }}</strong><br>
                                     Encontrado em <em>{{ processo['data_encontrado_formatada'] }}</em><br>
