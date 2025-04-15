@@ -84,16 +84,19 @@ def dashboard():
 
     df_teste, df_futuros = carregar_processos()
 
-    processos_teste = df_teste.to_dict(orient='records')
-    processos_futuros = df_futuros.to_dict(orient='records')
+    # Convertendo os processos encontrados para um formato que pode ser agrupado por data
+    df_futuros['data_encontrado'] = pd.to_datetime(df_futuros['data_encontrado'], errors='coerce')  # Convertendo a coluna para data
+    df_futuros = df_futuros.dropna(subset=['data_encontrado'])  # Removendo os processos sem data_encontrado
+
+    # Agrupando os processos por data de encontro
+    processos_por_data = df_futuros.groupby(df_futuros['data_encontrado'].dt.strftime('%d/%m/%Y'))['processo'].apply(list).to_dict()
 
     return render_template(
         'dashboard.html',
         usuario=session['usuario_logado'],
-        processos_teste=processos_teste,
-        processos_futuros=processos_futuros
+        processos_por_data=processos_por_data
     )
-
+    
 @app.route('/ir_login', methods=['POST'])
 def ir_login():
     session['primeiro_login'] = False
