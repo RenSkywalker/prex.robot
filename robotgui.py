@@ -188,12 +188,12 @@ def baixar_planilha_diaria():
     data_diaria = request.form.get('data_diaria')
     if not data_diaria:
         return "Data não fornecida", 400
-    
-    # Converte a data para o formato correto (DD/MM/AAAA)
+
+    # Corrige o formato da data do input HTML (YYYY-MM-DD)
     try:
-        data_diaria = datetime.strptime(data_diaria, '%d/%m/%Y')
+        data_diaria = datetime.strptime(data_diaria, '%Y-%m-%d')
     except ValueError:
-        return "Formato de data inválido. Use DD/MM/AAAA", 400
+        return "Formato de data inválido. Use AAAA-MM-DD", 400
 
     df_teste, df_futuros = carregar_processos()
 
