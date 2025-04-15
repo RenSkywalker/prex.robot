@@ -136,8 +136,12 @@
     /* Container para alinhar botões e formulários */
     .container {
       display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .form-container {
+      text-align: center;
     }
 
     /* Estilo para os formulários */
@@ -194,7 +198,7 @@
     <!-- Container para os botões de download e formulários -->
     <div class="container">
       <!-- Botão e formulário de Planilha Diária -->
-      <div>
+      <div class="form-container">
         <form action="{{ url_for('baixar_planilha_diaria') }}" method="POST">
           <button type="submit" class="btn">📅 Planilha Diária</button>
         </form>
@@ -206,15 +210,15 @@
         </form>
       </div>
 
-      <!-- Botão e formulário de Planilha Semanal (Agora no meio) -->
-      <div>
+      <!-- Botão de Planilha Semanal -->
+      <div class="form-container">
         <form action="{{ url_for('baixar_planilha_semanal') }}" method="POST">
           <button type="submit" class="btn">📅 Planilha Semanal</button>
         </form>
-          </div>
+      </div>
 
       <!-- Botão e formulário de Planilha Mensal -->
-      <div>
+      <div class="form-container">
         <form action="{{ url_for('baixar_planilha_mensal') }}" method="POST">
           <button type="submit" class="btn">🗓️ Planilha Mensal</button>
         </form>
@@ -243,5 +247,3 @@
   </script>
 </body>
 </html>
-
-
