@@ -69,6 +69,16 @@ def gerar_numero_processo():
     ano_fixo = random.choice([2024, 2025])
     return f"{prefixo_fixo}{numeros_aleatorios}.{ano_fixo}.8.26.0500"
 
+def gerar_processos_unicos(quantidade):
+    processos_unicos = set()
+    tentativas = 0
+    while len(processos_unicos) < quantidade and tentativas < quantidade * 10:
+        processo = gerar_numero_processo()
+        if processo not in processos_unicos and not processo_ja_registrado(processo):
+            processos_unicos.add(processo)
+        tentativas += 1
+    return list(processos_unicos)
+
 def dentro_do_horario():
     agora = datetime.now()
     return 7 <= agora.hour < 21 and agora.weekday() < 5
@@ -136,7 +146,7 @@ while True:
         print(inicio_msg)
         logging.info(inicio_msg)
 
-        processos = [gerar_numero_processo() for _ in range(300)]
+        processos = gerar_processos_unicos(300)  # << ALTERAÇÃO AQUI
         try:
             driver = iniciar_driver()
             buscar_precatorios_tjsp(driver, processos)
