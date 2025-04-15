@@ -179,17 +179,28 @@ def gerar_planilhas_periodicas():
     return render_template('gerar_planilhas_periodicas.html', usuario=session['usuario_logado'])
 
 # Rota para Baixar Planilha Diária
-@app.route('/baixar-planilha-diaria')
+@app.route('/baixar-planilha-diaria', methods=['POST'])
 def baixar_planilha_diaria():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
+
+    # Captura a data do formulário
+    data_diaria = request.form.get('data_diaria')
+    if not data_diaria:
+        return "Data não fornecida", 400
+    
+    # Converte a data para o formato correto (DD/MM/AAAA)
+    try:
+        data_diaria = datetime.strptime(data_diaria, '%d/%m/%Y')
+    except ValueError:
+        return "Formato de data inválido. Use DD/MM/AAAA", 400
 
     df_teste, df_futuros = carregar_processos()
 
     df_filtros = df_futuros[df_futuros['link'].notnull() & df_futuros['data_encontrado'].notnull()]
 
-    hoje = datetime.today().strftime('%Y-%m-%d')
-    df_diaria = df_filtros[df_filtros['data_encontrado'].astype(str).str.startswith(hoje)]
+    # Filtra os processos do dia fornecido
+    df_diaria = df_filtros[df_filtros['data_encontrado'].astype(str).str.startswith(data_diaria.strftime('%Y-%m-%d'))]
 
     if df_diaria.empty:
         df_diaria = pd.DataFrame(columns=['processo', 'data_encontrado', 'link'])
@@ -202,10 +213,10 @@ def baixar_planilha_diaria():
     return send_file(
         output,
         as_attachment=True,
-        download_name=f"Processos_Diarios_{hoje}.xlsx",
+        download_name=f"Processos_Diarios_{data_diaria.strftime('%d-%m-%Y')}.xlsx",
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    
+
 @app.route('/baixar-planilha-semanal')
 def baixar_planilha_semanal():
     if not session.get('usuario_logado'):
@@ -237,20 +248,33 @@ def baixar_planilha_semanal():
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
-@app.route('/baixar-planilha-mensal')
+@app.route('/baixar-planilha-mensal', methods=['POST'])
 def baixar_planilha_mensal():
     if not session.get('usuario_logado'):
         return redirect(url_for('login'))
 
-    _, df_futuros = carregar_processos()
+    # Captura as datas de início e fim do formulário
+    data_inicio = request.form.get('data_inicio')
+    data_fim = request.form.get('data_fim')
+
+    if not data_inicio or not data_fim:
+        return "Datas de início ou fim não fornecidas", 400
+    
+    try:
+        # Converte as datas para o formato correto (DD/MM/AAAA)
+        data_inicio = datetime.strptime(data_inicio, '%d/%m/%Y')
+        data_fim = datetime.strptime(data_fim, '%d/%m/%Y')
+    except ValueError:
+        return "Formato de data inválido. Use DD/MM/AAAA", 400
+
+    df_teste, df_futuros = carregar_processos()
+
     df_filtros = df_futuros[df_futuros['link'].notnull() & df_futuros['data_encontrado'].notnull()]
 
-    hoje = datetime.today()
-    trinta_dias_atras = hoje - timedelta(days=30)
-
+    # Filtra os processos dentro do intervalo de datas fornecido
     df_mensal = df_filtros[
-        (df_filtros['data_encontrado'] >= trinta_dias_atras) & 
-        (df_filtros['data_encontrado'] <= hoje)
+        (df_filtros['data_encontrado'] >= data_inicio) & 
+        (df_filtros['data_encontrado'] <= data_fim)
     ]
 
     if df_mensal.empty:
@@ -264,7 +288,7 @@ def baixar_planilha_mensal():
     return send_file(
         output,
         as_attachment=True,
-        download_name=f"Processos_Mensais_{hoje.strftime('%Y-%m-%d')}.xlsx",
+        download_name=f"Processos_Mensais_{data_inicio.strftime('%d-%m-%Y')}_a_{data_fim.strftime('%d-%m-%Y')}.xlsx",
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
     
