@@ -90,20 +90,24 @@ def dashboard():
     # Remover registros com campos importantes faltando
     df_futuros = df_futuros.dropna(subset=['data_encontrado', 'processo', 'link'])
 
-    # Agrupar por data formatada e transformar em lista de dicionários
+    # Criar coluna formatada sem microsegundos
+    df_futuros['data_encontrado_formatada'] = df_futuros['data_encontrado'].dt.strftime('%d/%m/%Y %H:%M:%S')
+
+    # Agrupar por data formatada (somente dia/mês/ano) e transformar em lista de dicionários
+    df_futuros['data_agrupamento'] = df_futuros['data_encontrado'].dt.strftime('%d/%m/%Y')
+
     processos_futuros = (
         df_futuros
-        .groupby(df_futuros['data_encontrado'].dt.strftime('%d/%m/%Y'))
-        .apply(lambda grupo: grupo.to_dict(orient='records'))
+        .groupby('data_agrupamento')
+        .apply(lambda grupo: grupo[['processo', 'link', 'data_encontrado_formatada']].to_dict(orient='records'))
         .to_dict()
-    )
-
+    
     return render_template(
         'dashboard.html',
         usuario=session['usuario_logado'],
         processos_futuros=processos_futuros
     )
-    
+
 @app.route('/ir_login', methods=['POST'])
 def ir_login():
     session['primeiro_login'] = False
