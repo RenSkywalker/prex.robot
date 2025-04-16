@@ -108,7 +108,7 @@ def dashboard():
     # Ordenar os processos por data_agrupamento em ordem decrescente
     processos_futuros = dict(sorted(processos_futuros.items(), reverse=True))
 
-    return render_template('dashboard.html', processos_futuros=processos_futuros)
+    return render_template('dashboard.html', usuario=session['usuario_logado'], processos_futuros=processos_futuros)
 
 @app.route('/ir_login', methods=['POST'])
 def ir_login():
