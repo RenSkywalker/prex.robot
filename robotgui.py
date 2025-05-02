@@ -106,7 +106,7 @@ def dashboard():
     )
 
     # Ordenar os processos por data_agrupamento em ordem decrescente
-    processos_futuros = dict(sorted(processos_futuros.items(), reverse=True))
+    processos_futuros = dict(sorted(processos_futuros.items(), reverse=False))
     processos_antigos = {k: v for k, v in processos_futuros.items() if datetime.strptime(k, '%d/%m/%Y') < datetime.today()}
     processos_futuros = {**processos_antigos, **processos_futuros}
 
