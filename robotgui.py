@@ -106,7 +106,7 @@ def dashboard():
     )
 
     # Ordenar os processos por data_agrupamento em ordem decrescente
-    processos_futuros = dict(sorted(processos_futuros.items(), reverse=True))
+    processos_futuros = dict(sorted(processos_futuros.items(), reverse=False))
 
     return render_template('dashboard.html', usuario=session['usuario_logado'], processos_futuros=processos_futuros)
 
